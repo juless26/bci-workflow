@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BCI Speech-to-Image Communication Flow — Jules Sherman</title>
+<meta name="description" content="A human-AI collaborative workflow for expressive communication. A speech BCI decodes intended words, AI turns them into image options, and the person remains the author of the message. Jules Sherman, UC Irvine MHCID, August 2026.">
+<meta name="author" content="Jules Sherman">
+<meta name="color-scheme" content="light">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="BCI Speech-to-Image Communication Flow">
+<meta property="og:description" content="A human-AI collaborative workflow for expressive communication. Jules Sherman, UC Irvine MHCID.">
+<meta property="og:image" content="assets/bci-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preload" href="assets/fonts/chivo-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-black-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/sheets.css">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0d14'/><text y='73' x='50' text-anchor='middle' font-size='60' font-family='Helvetica,Arial' font-weight='bold' fill='%23fff'>B</text></svg>">
+
+<style>
+  /* ---- page chrome: navigation and footer around the sheets ---- */
+
+  body { padding: 0; }
+
+  .skip-link {
+    position: absolute; left: -9999px; top: 0; z-index: 999;
+    background: var(--ink); color: #fff; padding: 12px 18px;
+    text-decoration: none; font-weight: 500;
+  }
+  .skip-link:focus { left: 8px; top: 8px; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: var(--rule);
+  }
+  .topbar__inner {
+    max-width: var(--maxw); margin: 0 auto;
+    display: flex; align-items: center; gap: 18px;
+    padding: 0 clamp(12px, 1.6vw, 22px); min-height: 52px;
+  }
+  .wordmark {
+    font-size: var(--t-chrome); font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink);
+    text-decoration: none; white-space: nowrap;
+    flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  }
+  .wordmark span { color: var(--muted); font-weight: 500; }
+
+  /* a flex item will not shrink below its content unless min-width is
+     cleared — without this the sheet numbers push the page sideways */
+  .sheetnav { margin-left: auto; min-width: 0; flex: 0 1 auto; }
+  .sheetnav ul {
+    display: flex; gap: 2px; list-style: none; margin: 0; padding: 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .sheetnav ul::-webkit-scrollbar { display: none; }
+  .sheetnav a {
+    display: block; padding: 6px 10px; border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: var(--t-chrome); font-weight: 700; letter-spacing: 0.04em;
+    color: var(--muted); text-decoration: none; white-space: nowrap;
+  }
+  .sheetnav a:hover { color: var(--ink); background: var(--panel); }
+  .sheetnav a[aria-current="true"] {
+    color: var(--ink); background: var(--pink); border-color: #e9c3d1;
+  }
+  .sheetnav .t { display: none; }
+
+  main { padding: clamp(16px, 2vw, 30px) clamp(12px, 1.6vw, 22px) 4px; }
+
+  .pagefoot {
+    max-width: var(--maxw); margin: 0 auto;
+    padding: 22px clamp(12px, 1.6vw, 22px) 56px;
+    border-top: var(--rule);
+    display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: baseline;
+    font-size: var(--t-foot); color: var(--muted);
+  }
+  .pagefoot strong { color: var(--ink); }
+  .pagefoot .to-top {
+    margin-left: auto; color: var(--muted); text-decoration: none;
+    border-bottom: 1px solid var(--line, #cdd1d8);
+  }
+  .pagefoot .to-top:hover { color: var(--ink); }
+
+  @media (max-width: 700px) {
+    .wordmark { font-size: 10px; }
+    .topbar__inner { gap: 10px; }
+  }
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#sheet-00">Skip to the sheets</a>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="wordmark" href="#top"><span class="keepcase">BCI</span> Speech-to-Image <span>&middot; Assignment 4</span></a>
+    <nav class="sheetnav" aria-label="Sheets">
+      <ul>
+      <li><a href="#sheet-00"><span class="n">00</span><span class="t">Title</span></a></li>
+      <li><a href="#sheet-01"><span class="n">01</span><span class="t">Context and shared goal</span></a></li>
+      <li><a href="#sheet-02"><span class="n">02</span><span class="t">Participants and roles</span></a></li>
+      <li><a href="#sheet-03"><span class="n">03</span><span class="t">Collaborative workflow</span></a></li>
+      <li><a href="#sheet-04"><span class="n">04</span><span class="t">Design values</span></a></li>
+      <li><a href="#sheet-05"><span class="n">05</span><span class="t">Stakeholder feedback</span></a></li>
+      <li><a href="#sheet-06"><span class="n">06</span><span class="t">Measures and impact</span></a></li>
+      <li><a href="#sheet-07"><span class="n">07</span><span class="t">Course connections and references</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<h1 class="sr-only" id="top">BCI speech-to-image communication flow &mdash; a human&ndash;AI collaborative workflow for expressive communication. Jules Sherman, UC Irvine MHCID, August 2026. Eight sheets.</h1>
+
+<!-- ==================== Sheet 00 — Title ==================== -->
+<style>
+/* ---- Sheet 00 — title page ------------------------------------------
+   Figma frame 1600x1100. Left column x=62 w=560, right column x=665
+   w=887 (the video), gutter 43. Title 46px Archivo Black, subtitle /
+   panel text / byline 24px Chivo, caption 12px. Every selector is
+   scoped to #sheet-00.                                               */
+
+#sheet-00 .s00-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 560fr) minmax(0, 887fr);
+  gap: clamp(16px, 2.7vw, 43px);
+  align-items: start;
+}
+
+#sheet-00 .s00-left {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vw, 22px);
+  min-width: 0;
+}
+
+/* the title on this sheet is far larger than on the other sheets */
+#sheet-00 .sheet__title {
+  font-size: clamp(22px, 2.66vw, 43px);
+  line-height: 0.96;
+  letter-spacing: 0;
+  /* Archivo Black overshoots a 0.96 line box by ~2px; reserve room so
+     nothing is ever cut off at the bottom of the block */
+  padding-bottom: max(3px, 0.08em);
+}
+
+#sheet-00 .s00-sub {
+  margin: 0;
+  font-size: clamp(16px, 1.5vw, 24px);
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+/* Figma: 59px between the subtitle and the pink panel */
+#sheet-00 .s00-idea {
+  margin-top: clamp(6px, 2.3vw, 37px);
+  padding: clamp(11px, 0.88vw, 14px) clamp(14px, 1.56vw, 25px) clamp(16px, 1.8vw, 29px);
+}
+#sheet-00 .s00-idea .panel__label {
+  margin-bottom: clamp(9px, 1.38vw, 22px);
+  font-size: clamp(15px, 1.5vw, 24px);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+#sheet-00 .s00-idea .panel__body {
+  font-size: clamp(15px, 1.5vw, 24px);
+  line-height: 1.5;
+}
+
+/* ---- the animation, 887 x 664 in the Figma frame ---- */
+#sheet-00 .film { margin: 0; min-width: 0; }
+#sheet-00 .film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 887 / 664;
+  object-fit: cover;
+  border: var(--rule);
+  background: var(--paper);
+}
+#sheet-00 .film figcaption {
+  margin-top: clamp(8px, 0.81vw, 13px);
+  font-size: var(--t-chrome);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+#sheet-00 .s00-byline {
+  margin: clamp(14px, 2.5vw, 40px) 0 clamp(4px, 1.2vw, 20px);
+  font-size: clamp(14px, 1.5vw, 24px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+@media (max-width: 860px) {
+  #sheet-00 .s00-cols { grid-template-columns: 1fr; }
+}
+</style>
+
+<section class="sheet" id="sheet-00" aria-labelledby="s00-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 00</span>
+    <span class="is-topic">Title / <span class="keepcase">BCI</span> speech-to-image communication</span>
+    <span class="is-tag">Assignment 4</span>
+  </div>
+
+  <div class="sheet__body">
+    <div class="s00-cols">
+      <div class="s00-left">
+        <h2 class="sheet__title" id="s00-title"><span class="keepcase">BCI</span> speech-to-image communication flow</h2>
+
+        <p class="s00-sub">A Human&ndash;<span class="keepcase">AI</span> collaborative workflow for expressive communication</p>
+
+        <div class="panel panel--pink s00-idea">
+          <h3 class="panel__label">The idea</h3>
+          <p class="panel__body">A speech <span class="keepcase">BCI</span> decodes intended words. <span class="keepcase">AI</span> turns those words into image options. The person decides what represents them, approves what is shared, and remains the author of the message.</p>
+        </div>
+      </div>
+
+      <figure class="film">
+        <video poster="assets/bci-poster.jpg" autoplay muted loop playsinline preload="metadata"
+               aria-label="Two profile heads face each other. The left head is dark, lit by a glowing neural network, with a circular sensor on the temple; the right head is pale, coloured in blue and rust. Passing between them is a burst of rainbow watercolour, bright pink lips, a paper bird and gold stars &mdash; a thought travelling from one person to the other as an image.">
+          <source src="assets/bci-animation.mp4" type="video/mp4">
+          <source src="assets/bci-animation.webm" type="video/webm">
+        </video>
+        <figcaption>Original Gif designed by Jules Sherman with Chat GPT Image and Canva Animation tools</figcaption>
+      </figure>
+    </div>
+
+    <p class="s00-byline">Jules Sherman  &middot;  UC Irvine <span class="keepcase">MHCID</span>  &middot;  Human&ndash;<span class="keepcase">AI</span> Interaction  &middot;  August 2026</p>
+  </div>
+</section>
+
+<!-- ==================== Sheet 01 — Context and shared goal ==================== -->
+<style>
+/* ------------------------------------------------------------------
+   Sheet 01 — CONTEXT AND SHARED GOAL
+   Every selector is scoped to #sheet-01 so nothing leaks into a
+   sibling sheet. Values come from the Figma frame 184:3.
+   ------------------------------------------------------------------ */
+
+/* the storyboard illustration */
+#sheet-01 .fig { margin: 0; border: var(--rule); }
+#sheet-01 .fig img { display: block; width: 100%; height: auto; }
+
+/* the pink "shared goal" panel — Figma pads it 20px/22px and sets the
+   statement in Archivo Black 26px/1.18 rather than body Chivo */
+#sheet-01 .goal { padding: 20px 22px; }
+#sheet-01 .goal .panel__label { margin-bottom: 10px; }
+#sheet-01 .goal__statement {
+  margin: 0;
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: clamp(17px, 1.63vw, 26px);
+  line-height: 1.18;
+}
+
+/* the three label/description boxes — a description list laid out as
+   three equal columns. No fixed height: the boxes are grid siblings so
+   they already match, and text can grow without clipping. */
+#sheet-01 .split {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.13vw, 18px);
+}
+#sheet-01 .split > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: var(--rule);
+  background: var(--panel);
+  padding: 16px 18px;
+}
+#sheet-01 .split > .is-paper { background: var(--paper); }
+#sheet-01 .split > .is-pink  { background: var(--pink); }
+#sheet-01 .split dt {
+  font-size: clamp(12px, 0.88vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+#sheet-01 .split dd {
+  margin: 0;
+  font-size: clamp(14.5px, 1vw, 16px);
+  line-height: 1.45;
+}
+
+/* Figma sets the closing note in regular weight at 15px */
+#sheet-01 .sheet__note--quiet {
+  font-weight: 400;
+  font-size: clamp(13px, 0.94vw, 15px);
+  line-height: 1.5;
+}
+
+@media (max-width: 860px) {
+  #sheet-01 .split { grid-template-columns: minmax(0, 1fr); }
+}
+
+</style>
+
+<section class="sheet" id="sheet-01" aria-labelledby="s01-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 01</span>
+    <span class="is-topic">Context / from <span class="keepcase">A3</span> interaction to <span class="keepcase">A4</span> collaboration</span>
+    <span class="is-tag">Overview</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s01-title">From one interaction to a collaborative system</h2>
+
+    <p class="sheet__intro">Assignment 3 explored one interaction: a person using a speech BCI turns decoded speech into an image to express a thought, feeling, or memory. Assignment 4 zooms out. The question is no longer only &ldquo;Can the AI make an image?&rdquo; but &ldquo;How should people and AI share the work of creating, approving, sending, and learning from that image over time?&rdquo;</p>
+
+    <figure class="fig">
+      <img src="assets/fig/fig-01-storyboard.webp" width="2400" height="1630" loading="lazy" alt="Hand-drawn storyboard of six panels numbered 00 to 05 that tells the whole project as a sequence. Panel 00 is the title page, &lsquo;BCI Speech-to-Image Communication Flow &mdash; a human-AI collaborative workflow for expressive communication&rsquo;, drawn as an author in a wheelchair wearing a BCI headset picturing a lake, a friendly robot holding up four candidate images, and two people receiving them, under the question &lsquo;What do you want to convey?&rsquo;. Panel 01, Context and shared goal, sorts the participants into three boxes &mdash; the author (uses a speech BCI, reviews and approves what best represents their meaning, always in control), the AI system (decodes intended speech, generates candidate images, does not decide meaning), and people in the loop (caregiver, SLP or family who give feedback, help interpret context and respect the author&rsquo;s intent) &mdash; and closes on a starred shared goal: enable clear, authentic expression while preserving dignity, agency and human connection. Panel 02, Collaborative workflow, is the part only the picture carries: six steps run left to right &mdash; 1 intent from author, 2 decode intended speech, 3 generate image options, 4 review and approval, 5 choose recipient, 6 share with recipient &mdash; drawn as a speech bubble saying &lsquo;I want to share a memory of the lake&rsquo;, a monitor showing a neural waveform, a grid of four generated landscapes, the author approving one, a contact picker listing Mom, Dad, Sister, Best Friend and SLP Maria with Dad selected, and a phone showing the sent image; a dashed &lsquo;refine and try again&rsquo; loop runs from the last step back to the first, so the author can restart at any time. Panel 03, Participants and roles, is a six-column chart &mdash; author (BCI user), caregiver, SLP, family member, AI system and recipient &mdash; each with a portrait, a list of responsibilities, and a one-line summary of the role. Panel 04, Design values, pairs four icons with 1 trust, 2 transparency, 3 agency, and 4 accountability and accessibility, ending on the banner &lsquo;AI assists. Humans decide. Together we communicate.&rsquo; Panel 05, Stakeholder feedback, holds four cards: caregivers, SLPs, family members and users provide feedback; real-world use informs refinements; co-design ensures the system meets people&rsquo;s needs; continuous feedback creates better communication for everyone. Much of this wording is repeated as text on the sheets that follow; what the drawing adds is the numbered narrative order and the visual chain of the six workflow steps with its refinement loop.">
+    </figure>
+
+    <div class="panel panel--pink goal">
+      <h3 class="panel__label">The shared goal</h3>
+      <p class="goal__statement">Help the person communicate meaning with less effort while keeping authorship, choice, and accountability with the person whose speech is being represented.</p>
+    </div>
+
+    <dl class="split">
+      <div>
+        <dt><span class="keepcase">AI</span> should do</dt>
+        <dd>Decode signals, generate image options, route approved messages, and keep a clear record of what happened.</dd>
+      </div>
+      <div class="is-paper">
+        <dt>Humans must do</dt>
+        <dd>Decide what the message means, whether it represents the person, who may receive it, and when settings should change.</dd>
+      </div>
+      <div class="is-pink">
+        <dt>Core rule</dt>
+        <dd>AI may propose and assist, but it may never decide what the person means or speak in the person&rsquo;s name.</dd>
+      </div>
+    </dl>
+
+    <p class="sheet__note sheet__note--quiet">What changes from Assignment 3: the interaction becomes a workflow with explicit roles, an authorship gate before anything is sent, recipient feedback, and a periodic review loop. This follows guidance to make AI capabilities visible and preserve user control over consequential actions (Amershi et al., 2019; Sankaran et al., 2023).</p>
+  </div>
+</section>
+
+<!-- ==================== Sheet 02 — Participants and roles ==================== -->
+<style>
+/* Sheet 02 — two parallel columns of role / responsibility pairs.
+   Every selector is scoped to #sheet-02 so nothing leaks to other sheets.
+   Figma: columns gap 22px, boxes gap 12px, box padding 16px 18px,
+   label-to-body gap 8px. The four boxes in each column share one height
+   (the Figma file forces the short ROUTER box to match), which is why the
+   two lists are equal-row grids inside stretched flex columns. */
+
+#sheet-02 .roles {
+  display: flex;
+  align-items: stretch;
+  gap: 22px;
+}
+
+#sheet-02 .roles__col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#sheet-02 .roles__head {
+  margin: 0;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* equal rows, but each row can still grow past its share, so text
+   never clips when it wraps to more lines */
+#sheet-02 .roles__list {
+  margin: 0;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  gap: 12px;
+}
+
+#sheet-02 .role { padding: 16px 18px; }
+#sheet-02 .role .panel__label { margin-bottom: 8px; }
+#sheet-02 .role .panel__body { line-height: 1.45; }
+
+#sheet-02 .rule-band .panel__body {
+  font-weight: 500;
+  line-height: 1.4;
+}
+#sheet-02 .rule-band .rule__lead { text-transform: uppercase; }
+
+#sheet-02 .fig { margin: 0; border: var(--rule); }
+#sheet-02 .fig img { display: block; width: 100%; height: auto; }
+
+@media (max-width: 860px) {
+  #sheet-02 .roles { flex-direction: column; gap: 18px; }
+  #sheet-02 .roles__list { display: flex; flex-direction: column; }
+}
+
+</style>
+
+<section class="sheet" id="sheet-02" aria-labelledby="s02-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 02</span>
+    <span class="is-topic">Participants / who does what</span>
+    <span class="is-tag">Roles</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s02-title">Who participates, and what each one is responsible for</h2>
+
+    <p class="sheet__intro">The collaboration includes people and several narrow AI roles. Each role has a limited job so responsibility is visible instead of disappearing inside one &ldquo;smart&rdquo; system.</p>
+
+    <div class="roles">
+      <div class="roles__col">
+        <h3 class="roles__head" id="s02-human">Human participants</h3>
+        <dl class="roles__list" aria-labelledby="s02-human">
+          <div class="panel panel--pink role">
+            <dt class="panel__label">Author / person using the <span class="keepcase">BCI</span></dt>
+            <dd class="panel__body">Starts the message, reviews image options, decides whether an image represents them, approves it, and chooses who may receive it.</dd>
+          </div>
+          <div class="panel panel--paper role">
+            <dt class="panel__label">Proxy / only when invited</dt>
+            <dd class="panel__body">May help compose when the Author defers. Proxy-created output is permanently labeled and can never be approved as the Author&rsquo;s own speech.</dd>
+          </div>
+          <div class="panel panel--paper role">
+            <dt class="panel__label">Recipients</dt>
+            <dd class="panel__body">Receive only what the Author has allowed. They can acknowledge receipt or ask to see the decoded words behind an image.</dd>
+          </div>
+          <div class="panel panel--paper role">
+            <dt class="panel__label">Speech-language pathologist + review partner</dt>
+            <dd class="panel__body">Help review vocabulary, communication preferences, and drift over time. They advise; they do not speak for the Author.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="roles__col">
+        <h3 class="roles__head" id="s02-ai"><span class="keepcase">AI</span> system roles</h3>
+        <dl class="roles__list" aria-labelledby="s02-ai">
+          <div class="panel role">
+            <dt class="panel__label">Decoder</dt>
+            <dd class="panel__body">Turns the neural signal into candidate words and shows confidence. It translates; it does not decide the meaning.</dd>
+          </div>
+          <div class="panel role">
+            <dt class="panel__label">Composer</dt>
+            <dd class="panel__body">Turns approved words or descriptors into several image options. It can regenerate, but it cannot send.</dd>
+          </div>
+          <div class="panel role">
+            <dt class="panel__label">Router</dt>
+            <dd class="panel__body">Delivers an approved image only to recipients the Author has already allowed.</dd>
+          </div>
+          <div class="panel role">
+            <dt class="panel__label">Record keeper / drift reporter</dt>
+            <dd class="panel__body">Records which inputs, agents, approvals, and recipients were involved, then summarizes repeated mismatches for later review.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="panel panel--pink rule-band">
+      <p class="panel__body"><span class="rule__lead">Responsibility rule:</span> No AI agent both creates and releases an image. The Author keeps the final decision about what counts as their speech.</p>
+    </div>
+
+    <figure class="fig">
+      <img src="assets/fig/fig-02-roles.webp" width="2400" height="477" loading="lazy" alt="Illustrated summary of the participants and roles listed above. On the left, under the heading Human participants, four coloured figures are labelled Author, Caregiver, Family and Recipient. A dashed arrow labelled AI assists points from them rightwards to four boxes under the heading AI system roles, labelled Decode, Compose, Route and Record. A line underneath reads: Humans decide what the message means. AI helps carry out the work.">
+    </figure>
+  </div>
+</section>
+
+<!-- ==================== Sheet 03 — Collaborative workflow ==================== -->
+<style>
+/* ── Sheet 03 — collaborative workflow ─────────────────────────────
+   Every selector is scoped to #sheet-03. Sizes come from the Figma
+   frame (chips 11px, card body 14px, card titles 20px Archivo Black,
+   card min-heights 165/175px, panel min-height 170px).            */
+
+#sheet-03 {
+  --t-chip: clamp(10px, 0.69vw, 11px);
+  --t-card: clamp(13.5px, 0.88vw, 14px);
+  --t-cardtitle: clamp(17px, 1.25vw, 20px);
+  --t-band: clamp(14px, 0.94vw, 15px);
+}
+
+/* the Figma body distributes its blocks with ~27px between them */
+#sheet-03 .sheet__body { gap: clamp(16px, 1.7vw, 27px); }
+
+/* text typed in sentence case, shown in capitals */
+#sheet-03 .caps { text-transform: uppercase; }
+
+/* ── the interaction-type chip ── */
+#sheet-03 .chip {
+  display: inline-block;
+  border: var(--rule);
+  background: var(--panel);
+  padding: 5px 10px;
+  font-size: var(--t-chip);
+  font-weight: 500;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+#sheet-03 .chip--pink  { background: var(--pink); }
+#sheet-03 .chip--paper { background: var(--paper); }
+
+/* ── legend: chip = definition ── */
+#sheet-03 .legend {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+}
+#sheet-03 .legend__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+#sheet-03 .legend dt,
+#sheet-03 .legend dd { margin: 0; }
+#sheet-03 .legend dd {
+  color: var(--muted);
+  font-size: var(--t-card);
+  line-height: 1.3;
+}
+#sheet-03 .legend dd::before { content: "= "; }
+
+/* ── loop blocks ── */
+#sheet-03 .loop {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#sheet-03 .loop__label {
+  margin: 0;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+/* ── the six step cards ── */
+#sheet-03 .steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+#sheet-03 .step {
+  border: var(--rule);
+  background: var(--paper);
+  padding: clamp(13px, 1.13vw, 18px) clamp(13px, 1vw, 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+#sheet-03 .step--panel { background: var(--panel); }
+#sheet-03 .step--pink  { background: var(--pink); }
+
+#sheet-03 .step__meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+}
+#sheet-03 .step__num {
+  flex: 0 0 auto;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4px 7px;
+  font-size: var(--t-chip);
+  font-weight: 500;
+  line-height: 1.2;
+}
+#sheet-03 .step__role {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--muted);
+  font-size: var(--t-chip);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+#sheet-03 .step__meta .chip { flex: 0 0 auto; }
+
+#sheet-03 .step__title {
+  margin: 0;
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: var(--t-cardtitle);
+  line-height: 1.12;
+}
+#sheet-03 .step__body,
+#sheet-03 .card__body {
+  margin: 0;
+  font-size: var(--t-card);
+  line-height: 1.42;
+}
+
+/* the line that sits between the two rows of cards */
+#sheet-03 .steps__aside {
+  margin: 0;
+  text-align: center;
+  font-size: var(--t-label);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ── key handoff band ── */
+#sheet-03 .band { padding: 22px 18px; }
+#sheet-03 .band p {
+  margin: 0;
+  font-size: var(--t-band);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ── slow loop / human review pair ── */
+#sheet-03 .pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+#sheet-03 .card {
+  border: var(--rule);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+#sheet-03 .card__label {
+  margin: 0;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+}
+#sheet-03 .card__title {
+  margin: 0;
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: var(--t-cardtitle);
+  line-height: 1.12;
+}
+#sheet-03 .card--panel { background: var(--panel); }
+#sheet-03 .card--paper { background: var(--paper); }
+
+/* ── footnote ── */
+#sheet-03 .sheet__note--quiet { font-weight: 400; line-height: 1.45; }
+
+/* card heights follow the Figma frame, but only where there is room
+   for them; they are minimums so nothing can ever clip.            */
+@media (min-width: 861px) {
+  #sheet-03 .steps--fast-a .step { min-height: clamp(140px, 10.3vw, 165px); }
+  #sheet-03 .steps--fast-b .step { min-height: clamp(148px, 10.9vw, 175px); }
+  #sheet-03 .card { min-height: clamp(144px, 10.6vw, 170px); }
+}
+
+@media (max-width: 860px) {
+  #sheet-03 .steps,
+  #sheet-03 .pair { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+
+<section class="sheet" id="sheet-03" aria-labelledby="s03-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 03</span>
+    <span class="is-topic">Workflow / how work moves over time</span>
+    <span class="is-tag">Fig. 2.1</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s03-title">The collaborative workflow</h2>
+
+    <p class="sheet__intro">The everyday loop is deliberately fast: <span class="keepcase">AI</span> does the repetitive work, while the person keeps the decisions that carry meaning or social consequences. A slower review loop checks whether the system is still representing the person well over time.</p>
+
+    <dl class="legend">
+      <div class="legend__item">
+        <dt><span class="chip">Coordinate</span></dt>
+        <dd>exchange information</dd>
+      </div>
+      <div class="legend__item">
+        <dt><span class="chip chip--pink">Negotiate</span></dt>
+        <dd>human may reject or ask for another try</dd>
+      </div>
+      <div class="legend__item">
+        <dt><span class="chip chip--paper">Transfer</span></dt>
+        <dd>responsibility changes hands</dd>
+      </div>
+    </dl>
+
+    <div class="loop">
+      <h3 class="loop__label">Fast loop&ensp;/&ensp;seconds to minutes</h3>
+
+      <ol class="steps steps--fast-a">
+        <li class="step">
+          <p class="step__meta">
+            <span class="step__num">1</span>
+            <span class="step__role">Author + decoder</span>
+            <span class="chip">Coordinate</span>
+          </p>
+          <h4 class="step__title">Attempt speech</h4>
+          <p class="step__body">The Author attempts to speak. The Decoder turns the neural signal into candidate words and shows confidence.</p>
+        </li>
+
+        <li class="step step--panel">
+          <p class="step__meta">
+            <span class="step__num">2</span>
+            <span class="step__role">Composer</span>
+            <span class="chip chip--paper">Transfer</span>
+          </p>
+          <h4 class="step__title">Create options</h4>
+          <p class="step__body">The Composer uses the decoded words to make several images. The system also shows what the model added beyond the person&rsquo;s words.</p>
+        </li>
+
+        <li class="step step--pink">
+          <p class="step__meta">
+            <span class="step__num">3</span>
+            <span class="step__role">Author</span>
+            <span class="chip chip--pink">Negotiate</span>
+          </p>
+          <h4 class="step__title">Authorship gate</h4>
+          <p class="step__body">The Author chooses: <span class="caps">approve</span>, <span class="caps">refine / try again</span>, or <span class="caps">defer</span>. Nothing can be sent until this gate is resolved.</p>
+        </li>
+      </ol>
+
+      <p class="steps__aside"><span role="img" aria-label="One, then two, then three.">1&ensp;&rarr;&ensp;2&ensp;&rarr;&ensp;3</span>&emsp;<span class="keepcase">AI</span> proposes; the human decides what counts as speech.</p>
+
+      <ol class="steps steps--fast-b" start="4">
+        <li class="step">
+          <p class="step__meta">
+            <span class="step__num">4</span>
+            <span class="step__role">Proxy, only if invited</span>
+            <span class="chip chip--paper">Transfer</span>
+          </p>
+          <h4 class="step__title">Optional handoff</h4>
+          <p class="step__body">If the Author has chosen a proxy mode, the proxy may help compose. The result stays clearly labeled as proxy-assisted communication.</p>
+        </li>
+
+        <li class="step step--panel">
+          <p class="step__meta">
+            <span class="step__num">5</span>
+            <span class="step__role">Author + router</span>
+            <span class="chip">Coordinate</span>
+          </p>
+          <h4 class="step__title">Choose audience and send</h4>
+          <p class="step__body">The Author chooses an allowed recipient or tier. The Router releases only the approved image to that audience.</p>
+        </li>
+
+        <li class="step">
+          <p class="step__meta">
+            <span class="step__num">6</span>
+            <span class="step__role">Recipient</span>
+            <span class="chip">Coordinate</span>
+          </p>
+          <h4 class="step__title">Acknowledge or ask</h4>
+          <p class="step__body">The recipient can acknowledge the message or ask to see the decoded words behind the image. That response returns to the Author.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="panel panel--pink band">
+      <p><span class="caps">Key handoff:</span> The <span class="keepcase">AI</span> can generate and route. Only the Author can turn machine output into their speech. If the Author defers to a proxy, that change in authorship stays visible.</p>
+    </div>
+
+    <div class="pair">
+      <div class="card card--panel">
+        <h3 class="card__label">Slow loop&ensp;/&ensp;periodic review</h3>
+        <h4 class="card__title">7&ensp;Review patterns, not every message</h4>
+        <p class="card__body">The Record Keeper flags repeated mismatches: words that are often changed, images repeatedly regenerated, or settings the Author no longer uses.</p>
+      </div>
+
+      <div class="card card--paper">
+        <h3 class="card__label">Human review</h3>
+        <h4 class="card__title">Author + <span class="keepcase">SLP</span> / review partner</h4>
+        <p class="card__body">They decide whether vocabulary, image preferences, proxy permissions, or recipient settings should change. The system does not silently learn a new meaning from behavior.</p>
+      </div>
+    </div>
+
+    <p class="sheet__note sheet__note--quiet">Information flow: neural signal <span aria-hidden="true">&rarr;</span><span class="sr-only">, then</span> candidate words <span aria-hidden="true">&rarr;</span><span class="sr-only">, then</span> image options <span aria-hidden="true">&rarr;</span><span class="sr-only">, then</span> human approval <span aria-hidden="true">&rarr;</span><span class="sr-only">, then</span> authorized recipient <span aria-hidden="true">&rarr;</span><span class="sr-only">, then</span> acknowledgement / clarification <span aria-hidden="true">&rarr;</span><span class="sr-only">, then</span> periodic review. The workflow separates generation from judgment and release so each important decision has an identifiable human owner.</p>
+  </div>
+</section>
+
+<!-- ==================== Sheet 04 — Design values ==================== -->
+<style>
+/* Sheet 04 — design values. Every selector is scoped to #sheet-04. */
+
+/* the 3 x 3 card grid: nine label/description pairs, so a description
+   list. Each dt/dd pair is wrapped in a div, which is the grid item and
+   carries the border and background.                                   */
+#sheet-04 .vgrid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--gap);
+  row-gap: clamp(10px, 0.9vw, 14px);
+}
+#sheet-04 .vgrid > div {
+  display: flex;
+  flex-direction: column;
+}
+#sheet-04 .vgrid dd { margin: 0; }
+
+/* the illustrated strip */
+#sheet-04 .fig { margin: 0; border: var(--rule); }
+#sheet-04 .fig img { display: block; width: 100%; height: auto; }
+
+@media (max-width: 860px) {
+  #sheet-04 .vgrid { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+
+<section class="sheet" id="sheet-04" aria-labelledby="s04-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 04</span>
+    <span class="is-topic">Values / why human judgment stays central</span>
+    <span class="is-tag">Table 3.1</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s04-title">Why human judgment stays central</h2>
+
+    <p class="sheet__intro">The workflow does not treat &ldquo;human in the loop&rdquo; as a final approval click. Human judgment is placed exactly where the AI cannot know the answer: personal meaning, authorship, consent, social context, and exceptions.</p>
+
+    <dl class="vgrid">
+      <div class="panel panel--paper">
+        <dt class="panel__label">Trust</dt>
+        <dd class="panel__body">Use several narrow AI roles instead of one opaque assistant. The Decoder shows confidence; the Composer cannot send; the Router cannot invent content. Trust can be calibrated role by role rather than granted to the whole system. (Amershi et al., 2019; Sniezek &amp; Van Swol, 2001)</dd>
+      </div>
+      <div class="panel panel--paper">
+        <dt class="panel__label">Transparency</dt>
+        <dd class="panel__body">Show the decoded words, what the image generator added, whether a proxy helped, who approved the image, and who received it. The person can see where machine contribution ends and authorship begins. (Amershi et al., 2019)</dd>
+      </div>
+      <div class="panel panel--paper">
+        <dt class="panel__label">Agency</dt>
+        <dd class="panel__body">The Author can approve, refine, regenerate, defer, or stop. Nothing times out and nothing is sent automatically. The Author also controls recipients and proxy permissions. (Sankaran et al., 2023; Freudenburg et al., 2024)</dd>
+      </div>
+
+      <div class="panel">
+        <dt class="panel__label">Accountability</dt>
+        <dd class="panel__body">Every image keeps a simple provenance record: what words were decoded, which agent generated it, who approved it, and where it was sent. Creation and release are separated so responsibility is traceable.</dd>
+      </div>
+      <div class="panel">
+        <dt class="panel__label">Accessibility</dt>
+        <dd class="panel__body">The same authorship gate can be reached by implanted BCI, eye gaze, or switch scanning. Recipients can request the decoded words if an image is difficult to interpret. The interaction waits for the person instead of timing out.</dd>
+      </div>
+      <div class="panel">
+        <dt class="panel__label">Meaningful human participation</dt>
+        <dd class="panel__body">The Author makes the judgment no one else can make: &ldquo;Does this represent what I mean, and does it sound like me?&rdquo; Human expertise is not used to supervise the AI; it defines the meaning the AI cannot supply.</dd>
+      </div>
+
+      <div class="panel">
+        <dt class="panel__label">What <span class="keepcase">AI</span> is good at</dt>
+        <dd class="panel__body">Fast decoding, generating alternatives, repetitive routing, and summarizing patterns across many interactions.</dd>
+      </div>
+      <div class="panel panel--pink">
+        <dt class="panel__label">What people are good at</dt>
+        <dd class="panel__body">Meaning, identity, consent, social relationships, contextual exceptions, and deciding when the system is wrong.</dd>
+      </div>
+      <div class="panel panel--paper">
+        <dt class="panel__label">Design principle</dt>
+        <dd class="panel__body">Offload effort, not judgment. The system should reduce the work required to communicate without reducing the person&rsquo;s authority over what is communicated.</dd>
+      </div>
+    </dl>
+
+    <p class="sheet__note sheet__note--quiet">This matters especially for speech BCIs because generated output may be experienced by others as the person&rsquo;s own voice. Research on speech neuroprostheses emphasizes preserving user agency and raises speech ownership as an ethical issue, not only a technical one. (Sankaran et al., 2023; Freudenburg et al., 2024)</p>
+
+    <figure class="fig">
+      <img src="assets/fig/fig-04-values.webp" width="2400" height="493" loading="lazy" alt="Illustrated strip headed &ldquo;Design values&rdquo;, repeating the five values listed above &mdash; trust, transparency, agency, accountability and accessibility &mdash; as five pastel cards, each with a simple icon. Two lines appear only here: &ldquo;Human judgment stays where the AI cannot know the answer.&rdquo; and &ldquo;AI can help with the work. The Author decides what the message means.&rdquo;">
+    </figure>
+  </div>
+</section>
+
+<!-- ==================== Sheet 05 — Stakeholder feedback ==================== -->
+<section class="sheet" id="sheet-05" aria-labelledby="s05-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 05</span>
+    <span class="is-topic">Feedback / what would change the next iteration</span>
+    <span class="is-tag">Table 4.1</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s05-title">Who should review this workflow before it is built</h2>
+
+    <p class="sheet__intro">This is a design proposal, not a validated workflow. The next iteration should be shaped by people who would use it, receive its messages, or be asked to support it. I would use short scenario walkthroughs and co-design conversations rather than treating this as a formal usability study.</p>
+
+    <div class="dtable-wrap">
+      <table class="dtable" role="table">
+        <caption class="sr-only">Stakeholder groups to consult, the question to ask each one, and what would change in the workflow as a result.</caption>
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">
+              <span class="h-label">Who</span>
+              <span class="h-desc">Perspective needed</span>
+            </th>
+            <th scope="col" role="columnheader">
+              <span class="h-label">What I need to learn</span>
+              <span class="h-desc">The question that could expose a weak assumption</span>
+            </th>
+            <th scope="col" role="columnheader">
+              <span class="h-label">What could change</span>
+              <span class="h-desc">How the workflow would respond to the feedback</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <th scope="row" role="rowheader">People who use <span class="keepcase">BCIs</span> or <span class="keepcase">AAC</span></th>
+            <td role="cell"><span class="colkey" aria-hidden="true">What I need to learn</span>Does the authorship gate feel protective, or does it add another exhausting checkpoint? When would you want fewer choices?</td>
+            <td role="cell"><span class="colkey" aria-hidden="true">What could change</span>Reduce or combine checkpoints, change defaults, or create a low-effort approval path while keeping explicit control.</td>
+          </tr>
+          <tr role="row">
+            <th scope="row" role="rowheader">Family members / designated proxies</th>
+            <td role="cell"><span class="colkey" aria-hidden="true">What I need to learn</span>Is the proxy handoff useful and respectful? Is the &ldquo;proxy-assisted&rdquo; label clear without making the message feel less legitimate?</td>
+            <td role="cell"><span class="colkey" aria-hidden="true">What could change</span>Change proxy permissions, labeling, or when a proxy can enter and leave the workflow.</td>
+          </tr>
+          <tr role="row">
+            <th scope="row" role="rowheader">Nurses + direct care staff</th>
+            <td role="cell"><span class="colkey" aria-hidden="true">What I need to learn</span>At 3:00 AM, can you understand what was sent and whether it requires action? What would you need besides the image?</td>
+            <td role="cell"><span class="colkey" aria-hidden="true">What could change</span>Add a plain-language fallback, urgency signal, or care-specific view without allowing staff to reinterpret the Author&rsquo;s message.</td>
+          </tr>
+          <tr role="row">
+            <th scope="row" role="rowheader">Speech-language pathologists / <span class="keepcase">AAC</span> clinicians</th>
+            <td role="cell"><span class="colkey" aria-hidden="true">What I need to learn</span>Is the periodic vocabulary and drift review clinically realistic? What decisions belong to the person versus the clinician?</td>
+            <td role="cell"><span class="colkey" aria-hidden="true">What could change</span>Change the review cadence, vocabulary controls, or clinician role so support does not become authorship.</td>
+          </tr>
+          <tr role="row">
+            <th scope="row" role="rowheader">Disability rights advocates + self-advocates</th>
+            <td role="cell"><span class="colkey" aria-hidden="true">What I need to learn</span>Does provenance protect agency, or could logging become surveillance? What should never be stored?</td>
+            <td role="cell"><span class="colkey" aria-hidden="true">What could change</span>Make retention opt-in, shorten storage, allow deletion, or keep only the minimum information required for accountability.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3 class="panel__label">What I would look for</h3>
+      <p class="panel__body">Can people explain who is responsible at each step? Can the Author tell when the AI added something? Does the approval process preserve agency without creating too much effort? Can recipients tell when they need clarification? Which handoffs fail for people using eye gaze or switches?</p>
+    </div>
+
+    <p class="sheet__note">The goal of stakeholder feedback is not to ask whether people &ldquo;like&rdquo; the system. It is to find where the proposed distribution of work, authority, and effort is wrong and revise the workflow before those rules are embedded in a product.</p>
+  </div>
+</section>
+
+<!-- ==================== Sheet 06 — Measures and impact ==================== -->
+<style>
+/* Sheet 06 — measures and impact. Every selector is scoped to #sheet-06. */
+
+#sheet-06 {
+  /* pastel card colours taken from the Figma frame */
+  --c-blue:   #ecf4fc;
+  --c-lilac:  #f5f0fd;
+  --c-green:  #ecf8e5;
+  --c-yellow: #fef6d7;
+
+  --t-sec:  clamp(14px, 1.02vw, 16px);
+  --t-cite: clamp(10px, 0.72vw, 11px);
+  --t-lede: clamp(15.5px, 1.15vw, 18px);
+}
+
+#sheet-06 .is-blue   { background: var(--c-blue); }
+#sheet-06 .is-lilac  { background: var(--c-lilac); }
+#sheet-06 .is-green  { background: var(--c-green); }
+#sheet-06 .is-yellow { background: var(--c-yellow); }
+
+/* section headings between the card rows */
+#sheet-06 .sec {
+  margin: 6px 0 -4px;
+  font-size: var(--t-sec);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* the two comparison panels at the top */
+#sheet-06 .pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+}
+#sheet-06 .pair > .panel { display: flex; flex-direction: column; }
+
+#sheet-06 .blist {
+  margin: 0;
+  padding-left: 1.05em;
+  list-style: disc;
+}
+#sheet-06 .blist li { line-height: 1.4; }
+
+#sheet-06 .cite {
+  margin: 8px 0 0;
+  font-size: var(--t-cite);
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* five numbered measure cards. The number is part of the card's own text,
+   so the list markers are switched off rather than duplicated.          */
+#sheet-06 .mgrid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--gap);
+}
+#sheet-06 .mgrid > li {
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(150px, 12.8vw, 205px);
+}
+#sheet-06 .mgrid .panel__label,
+#sheet-06 .igrid .panel__label { margin-bottom: 10px; }
+
+/* the question sits above a fixed-position "Measure:" line in Figma; a
+   three-line minimum reproduces that without ever clipping longer text */
+#sheet-06 .q {
+  margin: 0 0 11px;
+  min-height: calc(3 * 1.4em);
+  line-height: 1.4;
+}
+#sheet-06 .m {
+  margin: 0;
+  font-size: var(--t-foot);
+  line-height: 1.43;
+}
+
+/* four impact cards */
+#sheet-06 .igrid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+}
+#sheet-06 .igrid > div { display: flex; flex-direction: column; min-height: clamp(112px, 9vw, 145px); }
+#sheet-06 .igrid dd { margin: 0; }
+
+/* the full-width success band */
+#sheet-06 .win { margin-top: 8px; padding: 16px 18px 18px; }
+#sheet-06 .win__label {
+  margin: 0 0 8px;
+  font-size: var(--t-foot);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.3;
+}
+#sheet-06 .win__body {
+  margin: 0;
+  font-size: var(--t-lede);
+  line-height: 1.45;
+}
+
+#sheet-06 .foot {
+  margin-top: 18px;
+  font-size: var(--t-cite);
+  font-weight: 400;
+}
+
+/* 5 → 3 → 2 → 1 and 4 → 2 → 1 as the viewport narrows */
+@media (max-width: 1180px) {
+  #sheet-06 .mgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  #sheet-06 .pair  { grid-template-columns: minmax(0, 1fr); }
+  #sheet-06 .mgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #sheet-06 .igrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  #sheet-06 .mgrid,
+  #sheet-06 .igrid { grid-template-columns: minmax(0, 1fr); }
+  #sheet-06 .mgrid > li,
+  #sheet-06 .igrid > div { min-height: 0; }
+  #sheet-06 .q { min-height: 0; }
+}
+</style>
+
+<section class="sheet" id="sheet-06" aria-labelledby="s06-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 06</span>
+    <span class="is-topic">Evaluation / measures / impact</span>
+    <span class="is-tag">Outcomes</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s06-title">What can we measure, &amp; what is the impact?</h2>
+
+    <p class="sheet__intro">Technical performance matters, but it is not enough. This concept should also be evaluated by whether the Author can express intended meaning, remain in control, be understood, and use the system with less effort in everyday life.</p>
+
+    <div class="pair">
+      <div class="panel is-blue">
+        <h3 class="panel__label">What speech-<span class="keepcase">BCI</span> studies already measure</h3>
+        <ul class="blist">
+          <li>Decoder accuracy / word error rate</li>
+          <li>Communication rate (words per minute)</li>
+          <li>Calibration and recalibration needs</li>
+          <li>Hours of self-paced or conversational use</li>
+        </ul>
+        <p class="cite">Willett et al., 2023; Card et al., 2024</p>
+      </div>
+
+      <div class="panel panel--pink">
+        <h3 class="panel__label">What this concept also needs to measure</h3>
+        <ul class="blist">
+          <li>Does the image match what the Author meant?</li>
+          <li>Does the Author feel in control of what is sent?</li>
+          <li>Does the recipient understand the message?</li>
+          <li>Does the workflow reduce effort without reducing authorship?</li>
+        </ul>
+        <p class="cite">Sankaran et al., 2023; Freudenburg et al., 2024</p>
+      </div>
+    </div>
+
+    <h3 class="sec">What can we measure?</h3>
+
+    <ol class="mgrid">
+      <li class="panel">
+        <h4 class="panel__label">1. Match to intent</h4>
+        <p class="panel__body q">Does the final image represent what the Author meant?</p>
+        <p class="m">Measure: approval rate, number of revisions, repeated mismatches.</p>
+      </li>
+      <li class="panel is-lilac">
+        <h4 class="panel__label">2. Time + effort</h4>
+        <p class="panel__body q">How long does it take to reach an approved message? How many retries are needed?</p>
+        <p class="m">Measure: time, steps, fatigue or effort rating.</p>
+      </li>
+      <li class="panel is-green">
+        <h4 class="panel__label">3. Agency + control</h4>
+        <p class="panel__body q">Can the Author stop, correct, regenerate, defer, and choose the recipient?</p>
+        <p class="m">Measure: successful corrections and perceived control.</p>
+      </li>
+      <li class="panel is-yellow">
+        <h4 class="panel__label">4. Recipient understanding</h4>
+        <p class="panel__body q">Can the recipient explain the intended meaning? How often do they need clarification?</p>
+        <p class="m">Measure: correct interpretation and clarification requests.</p>
+      </li>
+      <li class="panel is-blue">
+        <h4 class="panel__label">5. Real-world reliability</h4>
+        <p class="panel__body q">Does the workflow work outside the lab and when the Author is tired?</p>
+        <p class="m">Measure: completed messages, failures, recalibration, hours used.</p>
+      </li>
+    </ol>
+
+    <h3 class="sec">What is the impact?</h3>
+
+    <dl class="igrid">
+      <div class="panel panel--pink">
+        <dt class="panel__label">More expressive communication</dt>
+        <dd class="panel__body">The person can communicate emotion, memory, and social meaning, not only decoded text.</dd>
+      </div>
+      <div class="panel is-green">
+        <dt class="panel__label">Preserved authorship</dt>
+        <dd class="panel__body">Generated images remain proposals until the Author accepts them as their message.</dd>
+      </div>
+      <div class="panel is-yellow">
+        <dt class="panel__label">Better connection</dt>
+        <dd class="panel__body">Family, friends, and caregivers can understand more of the intended meaning and respond to it.</dd>
+      </div>
+      <div class="panel is-lilac">
+        <dt class="panel__label">Greater participation</dt>
+        <dd class="panel__body">A reliable system could support more conversation, relationships, healthcare communication, work, and daily life.</dd>
+      </div>
+    </dl>
+
+    <div class="panel panel--pink win">
+      <h3 class="win__label">Success is not only faster or more accurate.</h3>
+      <p class="win__body">Success means the Author can express intended meaning with less effort, correct mistakes, decide what counts as their message, choose who receives it, and be understood.</p>
+    </div>
+
+    <p class="sheet__note sheet__note--quiet foot">Measures are informed by speech-<span class="keepcase">BCI</span> performance studies and agency / speech-ownership literature: Willett et al., 2023; Card et al., 2024; Sankaran et al., 2023; Freudenburg et al., 2024.</p>
+  </div>
+</section>
+
+<!-- ==================== Sheet 07 — Course connections and references ==================== -->
+<style>
+/* Sheet 07 — course connections and references. Every selector is scoped
+   to #sheet-07 so nothing leaks into a neighbouring sheet.               */
+
+/* pastel card colours, taken from the Figma frame */
+#sheet-07 {
+  --c-grey:   #f5f5f5;
+  --c-blue:   #edf5fc;
+  --c-purple: #f5f0fc;
+  --c-yellow: #fef6d7;
+  --c-green:  #ecf8e5;
+}
+
+/* six concept cards: a label plus a paragraph, so a description list.
+   Each dt/dd pair sits in a div, which is the grid item and carries the
+   border and the pastel background.                                     */
+#sheet-07 .cgrid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(8px, 0.75vw, 12px);
+  row-gap: var(--gap);
+}
+#sheet-07 .cgrid > div {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 17px;
+}
+#sheet-07 .cgrid dt { margin: 0 0 7px; }
+#sheet-07 .cgrid dd { margin: 0; }
+
+#sheet-07 .is-grey   { background: var(--c-grey); }
+#sheet-07 .is-blue   { background: var(--c-blue); }
+#sheet-07 .is-purple { background: var(--c-purple); }
+#sheet-07 .is-yellow { background: var(--c-yellow); }
+#sheet-07 .is-green  { background: var(--c-green); }
+
+/* the standalone section label above the bibliography */
+#sheet-07 .s-label { margin: 0; }
+
+/* the bibliography. Figma runs it as two newspaper columns: entries one
+   to four fill the left column top to bottom, five to eight the right.
+   CSS multi-column flows in exactly that order, so the DOM order is the
+   reading order.                                                        */
+#sheet-07 .refs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: 18px;
+  font-size: var(--t-chrome);
+  line-height: 1.4;
+}
+#sheet-07 .refs li {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin: 0 0 1.4em;
+}
+#sheet-07 .refs li:last-child { margin-bottom: 0; }
+/* the design sets journal titles in the same roman as the rest */
+#sheet-07 .refs cite { font-style: normal; }
+
+/* the closing note is 12px regular here, not the 14px medium default */
+#sheet-07 .sheet__note--quiet {
+  font-size: var(--t-chrome);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* the illustrated strip */
+#sheet-07 .fig { margin: 0; border: var(--rule); }
+#sheet-07 .fig img { display: block; width: 100%; height: auto; }
+
+@media (max-width: 860px) {
+  #sheet-07 .cgrid { grid-template-columns: minmax(0, 1fr); }
+  #sheet-07 .refs { columns: 1; }
+}
+</style>
+
+<section class="sheet" id="sheet-07" aria-labelledby="s07-title">
+  <div class="sheet__head">
+    <span class="is-num">Sheet 07</span>
+    <span class="is-topic">Course connections / readings / assignment map</span>
+    <span class="is-tag">References</span>
+  </div>
+
+  <div class="sheet__body">
+    <h2 class="sheet__title" id="s07-title">Course concepts that shaped the workflow</h2>
+
+    <dl class="cgrid">
+      <div class="panel is-grey">
+        <dt class="panel__label">Judge&ndash;advisor relationship</dt>
+        <dd class="panel__body">The <span class="keepcase">AI</span> provides candidate interpretations and images; the human remains the judge. This keeps advice separate from authority. (Sniezek &amp; Buckley, 1995; Sniezek &amp; Van Swol, 2001)</dd>
+      </div>
+      <div class="panel is-blue">
+        <dt class="panel__label">Human expertise</dt>
+        <dd class="panel__body">The person knows whether an image represents them; <span class="keepcase">SLPs</span> understand communication support; recipients know whether they understood. The system needs all three perspectives.</dd>
+      </div>
+
+      <div class="panel is-purple">
+        <dt class="panel__label">Calibrated trust</dt>
+        <dd class="panel__body">Capabilities, confidence, limits, and handoffs are visible so people can decide when to rely on each <span class="keepcase">AI</span> role. (Amershi et al., 2019)</dd>
+      </div>
+      <div class="panel is-yellow">
+        <dt class="panel__label">Iteration over time</dt>
+        <dd class="panel__body">Fast interactions should stay lightweight. A slower review loop creates space for reflection and adjustment without making every message carry the full burden of system evaluation.</dd>
+      </div>
+
+      <div class="panel panel--pink">
+        <dt class="panel__label">Agency + speech ownership</dt>
+        <dd class="panel__body">The authorship gate makes explicit that generated output is not automatically the person&rsquo;s speech. (Sankaran et al., 2023; Freudenburg et al., 2024)</dd>
+      </div>
+      <div class="panel is-green">
+        <dt class="panel__label">Technical feasibility, not technical determinism</dt>
+        <dd class="panel__body">Modern speech neuroprostheses can decode attempted speech, and intracranial signals have been explored for text and image generation. Feasibility does not determine who should have authority. (Willett et al., 2023; Card et al., 2024; Ikegawa et al., 2024)</dd>
+      </div>
+    </dl>
+
+    <h3 class="panel__label s-label" id="s07-refs">Selected references</h3>
+
+    <ul class="refs" aria-labelledby="s07-refs">
+      <li>Amershi, S., Weld, D., Vorvoreanu, M., Fourney, A., Nushi, B., Collisson, P., et al. (2019). Guidelines for human-<span class="keepcase">AI</span> interaction. <cite><span class="keepcase">CHI</span> 2019</cite>, 1&ndash;13.</li>
+      <li>Sankaran, N., Moses, D., Chiong, W., &amp; Chang, E. F. (2023). Recommendations for promoting user agency in the design of speech neuroprostheses. <cite>Frontiers in Human Neuroscience</cite>, 17.</li>
+      <li>Freudenburg, Z. V., et al. (2024). The ethics of speech ownership in the context of neural control of augmented assistive communication. <cite>Frontiers in Human Neuroscience</cite>, 18.</li>
+      <li>Sniezek, J. A., &amp; Buckley, T. (1995). Cueing and cognitive conflict in judge-advisor decision making. <cite>Organizational Behavior and Human Decision Processes</cite>, 62(2), 159&ndash;174.</li>
+      <li>Sniezek, J. A., &amp; Van Swol, L. M. (2001). Trust, confidence, and expertise in a judge-advisor system. <cite>Organizational Behavior and Human Decision Processes</cite>, 84(2), 288&ndash;307.</li>
+      <li>Ikegawa, Y., et al. (2024). Text and image generation from intracranial electroencephalography using an embedding space for text and images. <cite>Journal of Neural Engineering</cite>, 21(3).</li>
+      <li>Card, N. S., Wairagkar, M., Iacobacci, C., Hou, X., Singer-Clark, T., Willett, F. R., et al. (2024). An accurate and rapidly calibrating speech neuroprosthesis. <cite>New England Journal of Medicine</cite>, 391(7), 609&ndash;618.</li>
+      <li>Willett, F. R., Kunz, E. M., Fan, C., Avansino, D. T., Wilson, G. H., Choi, E. Y., et al. (2023). A high-performance speech neuroprosthesis. <cite>Nature</cite>, 620, 1031&ndash;1036.</li>
+    </ul>
+
+    <p class="sheet__note sheet__note--quiet">The full reference list remains on the original Author&rsquo;s Proof page. This simplified version keeps the sources most directly connected to the collaborative workflow and its design rationale.</p>
+
+    <figure class="fig">
+      <img src="assets/fig/fig-07-concepts.webp" width="2400" height="477" loading="lazy" alt="Illustrated strip headed &ldquo;Course concepts&rdquo;, repeating the six concepts above as pastel cards with simple figures of people, an AI box, bars and a loop arrow. The cards are labelled Judge + Advisor, Calibrated Trust, Agency + Ownership, Human Expertise, Iterate Over Time, and Feasibility &ne; Authority &mdash; the last card puts a &ldquo;not equal to&rdquo; sign between the AI box and the person, so technical capability is not the same as authority. A closing line reads: &ldquo;Technology can make the interaction possible. It does not decide who has authority.&rdquo;">
+    </figure>
+  </div>
+</section>
+
+</main>
+
+<footer class="pagefoot">
+  <span><strong>Jules Sherman</strong> &middot; UC Irvine MHCID &middot; Human&ndash;AI Interaction &middot; August 2026</span>
+  <span>Animation designed by Jules Sherman with ChatGPT Image and Canva.</span>
+  <a class="to-top" href="#top">Back to top &uarr;</a>
+</footer>
+
+<script>
+  /* mark the sheet currently in view in the navigation */
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    var links = {};
+    document.querySelectorAll('.sheetnav a').forEach(function (a) {
+      links[a.getAttribute('href').slice(1)] = a;
+    });
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var l = links[e.target.id];
+        if (l && e.isIntersecting) {
+          Object.keys(links).forEach(function (k) { links[k].removeAttribute('aria-current'); });
+          l.setAttribute('aria-current', 'true');
+        }
+      });
+    }, { rootMargin: '-15% 0px -75% 0px' });
+    document.querySelectorAll('section.sheet').forEach(function (s) { obs.observe(s); });
+  })();
+
+  /* some browsers hold autoplay until the page is interacted with */
+  (function () {
+    var v = document.querySelector('video');
+    if (!v) return;
+    function go() { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    go();
+    ['pointerdown', 'keydown', 'touchstart'].forEach(function (e) {
+      window.addEventListener(e, go, { once: true, passive: true });
+    });
+  })();
+</script>
+
+</body>
+</html>
