@@ -1,0 +1,433 @@
+/* ============================================================
+   BCI Speech-to-Image Communication Flow
+   Shared style system for the rebuilt sheets.
+
+   Values are taken from the Figma file, not estimated:
+     ink    #0b0d14      body text, every border
+     muted  #5a6178      labels, secondary type
+     pink   #ffe9f0      emphasis panels and table headers
+     panel  #f6f7f9      quiet panels
+   Type:  Archivo Black for sheet titles, Chivo 400/500/700 for the rest.
+
+   Two rules govern this file.
+   1. Text is written in normal sentence case and made uppercase by CSS.
+      A screen reader then reads words, not shouting, and acronyms such as
+      BCI or AAC stay literal because they are typed that way.
+   2. Nothing is positioned absolutely. Every sheet reflows down to a
+      320px screen, which is what WCAG 1.4.10 asks for.
+   ============================================================ */
+
+@font-face {
+  font-family: "Archivo Black";
+  src: url("fonts/archivo-black-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Chivo";
+  src: url("fonts/chivo-400.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Chivo";
+  src: url("fonts/chivo-500.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Chivo";
+  src: url("fonts/chivo-700.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  --ink: #0b0d14;
+  --muted: #5a6178;
+  --pink: #ffe9f0;
+  --panel: #f6f7f9;
+  --paper: #ffffff;
+  --page-bg: #eef0f3;
+
+  --rule: 1px solid var(--ink);
+  --gap: clamp(7px, 0.63vw, 10px);
+  --pad-x: clamp(16px, 2.9vw, 46px);
+  --pad-y: clamp(20px, 2.25vw, 36px);
+
+  --t-title: clamp(21px, 2.15vw, 34px);
+  --t-intro: clamp(15px, 1.07vw, 17px);
+  --t-body: clamp(14.5px, 0.95vw, 15px);
+  --t-label: clamp(12px, 0.82vw, 13px);
+  --t-foot: clamp(13px, 0.88vw, 14px);
+  --t-chrome: clamp(10px, 0.76vw, 12px);
+
+  --maxw: 1600px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: Chivo, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: var(--t-body);
+  line-height: 1.43;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- the sheet shell ---------- */
+
+.sheet {
+  max-width: var(--maxw);
+  margin: 0 auto clamp(26px, 3vw, 44px);
+  background: var(--paper);
+  border: var(--rule);
+}
+
+.sheet__head {
+  display: flex;
+  align-items: stretch;
+  border-bottom: var(--rule);
+  font-size: var(--t-chrome);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sheet__head > * {
+  padding: 14px 16px 12px;
+  border-right: var(--rule);
+}
+.sheet__head > *:last-child { border-right: 0; }
+.sheet__head .is-num   { flex: 0 0 auto; width: clamp(84px, 6.9vw, 110px); }
+.sheet__head .is-topic { flex: 1 1 auto; min-width: 0; }
+.sheet__head .is-tag   { flex: 0 0 auto; width: clamp(96px, 10.6vw, 170px); }
+
+/* Below roughly 600px the three fixed cells cannot hold the topic text and
+   the sheet pushes past the viewport. Stack the strip instead of shrinking
+   the type to nothing. */
+@media (max-width: 600px) {
+  .sheet__head { display: block; }
+  .sheet__head > * {
+    display: block;
+    width: auto;
+    border-right: 0;
+    border-bottom: var(--rule);
+    padding: 9px 14px;
+  }
+  .sheet__head > *:last-child { border-bottom: 0; }
+}
+
+.sheet__body {
+  padding: var(--pad-y) var(--pad-x);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 0.9vw, 14px);
+}
+
+.sheet__title {
+  margin: 0;
+  font-family: "Archivo Black", "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: var(--t-title);
+  line-height: 1.04;
+  letter-spacing: 0.002em;
+  text-transform: uppercase;
+}
+
+.sheet__intro {
+  margin: 0;
+  font-size: var(--t-intro);
+  line-height: 1.48;
+}
+
+.sheet__note {
+  margin: 0;
+  font-size: var(--t-foot);
+  font-weight: 500;
+  line-height: 1.45;
+}
+.sheet__note--quiet { color: var(--muted); }
+
+/* ---------- panels ---------- */
+
+.panel {
+  border: var(--rule);
+  padding: 14px 18px;
+  background: var(--panel);
+}
+.panel--pink  { background: var(--pink); }
+.panel--paper { background: var(--paper); }
+
+.panel__label {
+  margin: 0 0 6px;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+}
+.panel__body { margin: 0; line-height: 1.43; }
+
+/* ---------- the data table ---------- */
+
+/* border-spacing also applies outside the edge cells. Pull the WRAPPER out
+   by one gap on each side so the table lines up with the body padding —
+   a negative margin on a block box widens it without overflowing. */
+.dtable-wrap { margin: 0 calc(var(--gap) * -1); }
+
+.dtable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: var(--gap);
+  text-align: center;
+}
+
+.dtable caption {
+  text-align: left;
+  padding: 0 var(--gap) 8px;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dtable th,
+.dtable td {
+  border: var(--rule);
+  padding: 12px 16px;
+  vertical-align: middle;
+  width: 33.333%;
+  font-weight: 400;
+}
+
+/* row heights follow the Figma frame: header row 74px, body rows 116px */
+.dtable thead th { background: var(--pink); height: clamp(62px, 4.6vw, 74px); }
+.dtable tbody th,
+.dtable tbody td { height: clamp(92px, 7.25vw, 116px); }
+.dtable thead .h-label {
+  display: block;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.2;
+  margin-bottom: 7px;
+}
+.dtable thead .h-desc {
+  display: block;
+  font-weight: 400;
+  line-height: 1.43;
+}
+
+.dtable tbody th[scope="row"] {
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 1.2;
+}
+
+/* CSS uppercase would turn "BCIs" into "BCIS". Anything wrapped in
+   .keepcase renders exactly as it is typed.                        */
+.keepcase { text-transform: none; }
+
+/* stacked cards on narrow screens — the table keeps its semantics,
+   only the visual arrangement changes                              */
+/* The in-cell column key. Hidden on wide screens where the real column
+   header is visible above; shown once the table stacks. It is
+   aria-hidden because the cell still gets its column header from the
+   table's own header association — without this the name is announced
+   twice. */
+.colkey { display: none; }
+
+/* Stacked cards on narrow screens.
+   IMPORTANT: display:block on table elements removes the table role from
+   the accessibility tree in every major browser, which would throw away
+   the row and column header association this sheet exists to provide.
+   The markup therefore carries explicit ARIA roles (role="table",
+   "rowgroup", "row", "columnheader", "rowheader", "cell") so the
+   semantics survive the layout change. Do not remove them. */
+@media (max-width: 860px) {
+  .dtable, .dtable thead, .dtable tbody,
+  .dtable tr, .dtable th, .dtable td { display: block; width: auto; }
+  .dtable { border-spacing: 0; margin: 0; width: 100%; }
+
+  /* keep the header in the accessibility tree but out of the layout;
+     it must be display:block first or overflow cannot clip it and its
+     text widens the whole page */
+  .dtable thead {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .dtable tr { border: var(--rule); margin-bottom: 12px; }
+  .dtable th, .dtable td { border: 0; border-bottom: var(--rule); text-align: left; }
+  .dtable thead th,
+  .dtable tbody th,
+  .dtable tbody td { height: auto; }
+  .dtable tr > *:last-child { border-bottom: 0; }
+  .dtable tbody th[scope="row"] { background: var(--pink); }
+
+  .colkey {
+    display: block;
+    font-size: var(--t-label);
+    font-weight: 500;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+}
+
+/* ============================================================
+   INTERACTION
+   Three additions, in the order they matter.
+
+   1. Every illustration opens full size. The markup is a real link to
+      the image file, so it works with JavaScript switched off; the
+      script upgrades it to an in-page viewer. Never make the picture a
+      <button> only — that strands anyone whose script did not load.
+   2. A magnifying lens follows the mouse over an illustration. This is
+      a bonus for mouse users and nothing else, so it is gated behind
+      `hover: hover and pointer: fine`. It must never be the only way to
+      see a picture larger — point 1 is what carries that.
+   3. Cards lift on hover AND on keyboard focus. The shadow is solid
+      ink with a hard edge, drawn from the same 1px rule that borders
+      every box here, rather than a soft glow — a blur would be the only
+      out-of-focus thing on the page.
+   ============================================================ */
+
+/* ---------- 1 + 2. illustrations ---------- */
+
+.fig { position: relative; }
+
+.fig > .zoom {
+  display: block;
+  border: var(--rule);
+  cursor: zoom-in;
+  line-height: 0;
+  /* the lens is a child positioned over the image; clip it at the
+     picture's edge so a lens near the right edge cannot widen the page */
+  overflow: hidden;
+  position: relative;
+}
+.fig > .zoom:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+.fig figcaption {
+  display: flex; justify-content: flex-end;
+  padding-top: 7px;
+  font-size: var(--t-label);
+}
+.fig figcaption a {
+  color: var(--muted); text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.fig figcaption a:hover { color: var(--ink); border-bottom-color: var(--muted); }
+
+/* display:none rather than opacity:0 — a hidden-but-present 240px circle
+   still counts toward its container's scroll height, which made the
+   picture report itself as overflowing at every screen width. */
+.lens {
+  display: none;
+  position: absolute; top: 0; left: 0; z-index: 3;
+  width: 240px; height: 240px; border-radius: 50%;
+  border: 2px solid var(--ink);
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.3);
+  background-repeat: no-repeat; background-color: var(--paper);
+  pointer-events: none;
+}
+.lens.is-on { display: block; }
+
+/* on a short picture a 240px lens is taller than the picture itself */
+@media (max-width: 900px) {
+  .lens { width: 170px; height: 170px; }
+}
+
+/* the lens replaces the pointer while it is showing */
+.fig > .zoom.lens-active { cursor: none; }
+
+/* ---------- 1. the full-size viewer ---------- */
+
+.viewer {
+  width: 96vw; max-width: none; height: 94vh;
+  padding: 0; border: var(--rule); background: var(--paper);
+}
+.viewer::backdrop { background: rgba(11, 13, 20, 0.72); }
+.viewer__bar {
+  display: flex; gap: 12px; align-items: center;
+  padding: 9px 14px; border-bottom: var(--rule);
+  font-size: var(--t-label); letter-spacing: 0.045em;
+  text-transform: uppercase; color: var(--muted);
+}
+.viewer__bar .viewer__hint { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.viewer__close {
+  margin-left: auto; flex: 0 0 auto;
+  font: inherit; font-size: var(--t-foot); text-transform: none; letter-spacing: 0;
+  color: var(--ink); background: var(--paper);
+  border: var(--rule); padding: 6px 14px; cursor: pointer;
+}
+.viewer__close:hover { background: var(--panel); }
+.viewer__pane {
+  height: calc(100% - 43px); overflow: auto; background: var(--page-bg);
+  touch-action: pan-x pan-y pinch-zoom;   /* let phones pinch to zoom */
+  overscroll-behavior: contain;
+}
+.viewer__pane:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+.viewer__pane img { display: block; max-width: none; cursor: grab; }
+.viewer__pane.is-dragging img { cursor: grabbing; }
+
+/* ---------- 3. cards lift on hover and on keyboard focus ---------- */
+
+/* Only cards that sit in a group of cards. A lone full-width panel —
+   Sheet 01's shared goal, Sheet 05's note — stays still, because there
+   is nothing there to compare it against and the movement would just
+   be noise. */
+.panel:has(~ .panel),
+.panel ~ .panel,
+.split > div,
+.step {
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.panel:has(~ .panel):hover, .panel ~ .panel:hover,
+.split > div:hover, .step:hover,
+.panel:has(~ .panel):focus-visible, .panel ~ .panel:focus-visible,
+.split > div:focus-visible, .step:focus-visible {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+/* ---------- utilities ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+
+  /* someone who has asked their system for less motion still gets the
+     shadow — they just do not get the shift that causes it */
+  .panel:has(~ .panel):hover, .panel ~ .panel:hover,
+  .split > div:hover, .step:hover,
+  .panel:has(~ .panel):focus-visible, .panel ~ .panel:focus-visible,
+  .split > div:focus-visible, .step:focus-visible {
+    transform: none;
+  }
+}
