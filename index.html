@@ -1066,16 +1066,20 @@
 /* Sheet 04 — design values. Every selector is scoped to #sheet-04.
 
    COLOUR RULE for the nine cards. One tone, one meaning:
-     white (.panel--paper)  a value — the six peer values, rows 1 and 2
-     grey  (.panel)         the division-of-labour pair, AI and people.
-                            These two MUST match each other; giving one a
-                            different tone claims it outranks the other,
-                            when the whole point is that they are compared.
-     pink  (.panel--pink)   the conclusion, and only the conclusion.
-                            Pink means the same thing elsewhere on the site
-                            (Sheet 01's shared goal and core rule).
-   The file previously striped rows 1 and 2 white/grey, which implied the
-   six values were two different categories. They are not.                */
+     white (.panel--paper)  a value — the six peer values, rows 1 and 2.
+                            They are one set of peers, so they share a tone.
+                            The file used to stripe rows 1 and 2 white/grey,
+                            which implied two different categories. It is one.
+     grey  (.panel)         the machine side — "what AI is good at".
+     pink  (.panel--pink)   human authority. Deliberate emphasis, chosen by
+                            Jules: "what people are good at" and the design
+                            principle that follows from it. The sheet is
+                            titled "Why human judgment stays central", so
+                            the loud colour marks the human thread and the
+                            quiet grey marks the machine's contribution.
+                            Pink carries the same weight on Sheet 01.
+   The last two cards are both pink on purpose — they are one argument:
+   people carry the meaning, therefore offload effort and not judgment.  */
 
 /* the 3 x 3 card grid: nine label/description pairs, so a description
    list. Each dt/dd pair is wrapped in a div, which is the grid item and
@@ -1145,7 +1149,7 @@
         <dt class="panel__label">What <span class="keepcase">AI</span> is good at</dt>
         <dd class="panel__body">Fast decoding, generating alternatives, repetitive routing, and summarizing patterns across many interactions.</dd>
       </div>
-      <div class="panel">
+      <div class="panel panel--pink">
         <dt class="panel__label">What people are good at</dt>
         <dd class="panel__body">Meaning, identity, consent, social relationships, contextual exceptions, and deciding when the system is wrong.</dd>
       </div>
