@@ -285,6 +285,123 @@ body {
   }
 }
 
+/* ============================================================
+   INTERACTION
+   Three additions, in the order they matter.
+
+   1. Every illustration opens full size. The markup is a real link to
+      the image file, so it works with JavaScript switched off; the
+      script upgrades it to an in-page viewer. Never make the picture a
+      <button> only — that strands anyone whose script did not load.
+   2. A magnifying lens follows the mouse over an illustration. This is
+      a bonus for mouse users and nothing else, so it is gated behind
+      `hover: hover and pointer: fine`. It must never be the only way to
+      see a picture larger — point 1 is what carries that.
+   3. Cards lift on hover AND on keyboard focus. The shadow is solid
+      ink with a hard edge, drawn from the same 1px rule that borders
+      every box here, rather than a soft glow — a blur would be the only
+      out-of-focus thing on the page.
+   ============================================================ */
+
+/* ---------- 1 + 2. illustrations ---------- */
+
+.fig { position: relative; }
+
+.fig > .zoom {
+  display: block;
+  border: var(--rule);
+  cursor: zoom-in;
+  line-height: 0;
+  /* the lens is a child positioned over the image; clip it at the
+     picture's edge so a lens near the right edge cannot widen the page */
+  overflow: hidden;
+  position: relative;
+}
+.fig > .zoom:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+.fig figcaption {
+  display: flex; justify-content: flex-end;
+  padding-top: 7px;
+  font-size: var(--t-label);
+}
+.fig figcaption a {
+  color: var(--muted); text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.fig figcaption a:hover { color: var(--ink); border-bottom-color: var(--muted); }
+
+/* display:none rather than opacity:0 — a hidden-but-present 240px circle
+   still counts toward its container's scroll height, which made the
+   picture report itself as overflowing at every screen width. */
+.lens {
+  display: none;
+  position: absolute; top: 0; left: 0; z-index: 3;
+  width: 240px; height: 240px; border-radius: 50%;
+  border: 2px solid var(--ink);
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.3);
+  background-repeat: no-repeat; background-color: var(--paper);
+  pointer-events: none;
+}
+.lens.is-on { display: block; }
+
+/* on a short picture a 240px lens is taller than the picture itself */
+@media (max-width: 900px) {
+  .lens { width: 170px; height: 170px; }
+}
+
+/* the lens replaces the pointer while it is showing */
+.fig > .zoom.lens-active { cursor: none; }
+
+/* ---------- 1. the full-size viewer ---------- */
+
+.viewer {
+  width: 96vw; max-width: none; height: 94vh;
+  padding: 0; border: var(--rule); background: var(--paper);
+}
+.viewer::backdrop { background: rgba(11, 13, 20, 0.72); }
+.viewer__bar {
+  display: flex; gap: 12px; align-items: center;
+  padding: 9px 14px; border-bottom: var(--rule);
+  font-size: var(--t-label); letter-spacing: 0.045em;
+  text-transform: uppercase; color: var(--muted);
+}
+.viewer__bar .viewer__hint { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.viewer__close {
+  margin-left: auto; flex: 0 0 auto;
+  font: inherit; font-size: var(--t-foot); text-transform: none; letter-spacing: 0;
+  color: var(--ink); background: var(--paper);
+  border: var(--rule); padding: 6px 14px; cursor: pointer;
+}
+.viewer__close:hover { background: var(--panel); }
+.viewer__pane {
+  height: calc(100% - 43px); overflow: auto; background: var(--page-bg);
+  touch-action: pan-x pan-y pinch-zoom;   /* let phones pinch to zoom */
+  overscroll-behavior: contain;
+}
+.viewer__pane:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+.viewer__pane img { display: block; max-width: none; cursor: grab; }
+.viewer__pane.is-dragging img { cursor: grabbing; }
+
+/* ---------- 3. cards lift on hover and on keyboard focus ---------- */
+
+/* Only cards that sit in a group of cards. A lone full-width panel —
+   Sheet 01's shared goal, Sheet 05's note — stays still, because there
+   is nothing there to compare it against and the movement would just
+   be noise. */
+.panel:has(~ .panel),
+.panel ~ .panel,
+.split > div,
+.step {
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.panel:has(~ .panel):hover, .panel ~ .panel:hover,
+.split > div:hover, .step:hover,
+.panel:has(~ .panel):focus-visible, .panel ~ .panel:focus-visible,
+.split > div:focus-visible, .step:focus-visible {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
 /* ---------- utilities ---------- */
 
 .sr-only {
@@ -304,4 +421,13 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+
+  /* someone who has asked their system for less motion still gets the
+     shadow — they just do not get the shift that causes it */
+  .panel:has(~ .panel):hover, .panel ~ .panel:hover,
+  .split > div:hover, .step:hover,
+  .panel:has(~ .panel):focus-visible, .panel ~ .panel:focus-visible,
+  .split > div:focus-visible, .step:focus-visible {
+    transform: none;
+  }
 }
