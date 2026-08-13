@@ -1,10 +1,45 @@
 [build]
   publish = "."
 
+# ---------------------------------------------------------------------
+# Caching.
+#
+# The rule that matters: anything cached "immutable" is cached for a YEAR,
+# and replacing that file in place does nothing — every browser that has
+# already seen it keeps its own copy. A hard reload does not clear it.
+#
+# So only files whose NAME changes when their CONTENT changes may be
+# immutable. Fonts and pictures qualify, because a new picture gets a new
+# filename (fig-01-storyboard-v2.webp). The stylesheet does not: it gets
+# edited in place, so it must revalidate, or a style change never reaches
+# anyone who has already visited.
+#
+# This bit us twice — once on the storyboard, once on the stylesheet.
+# ---------------------------------------------------------------------
+
+# pictures — versioned by filename, safe to cache hard
 [[headers]]
-  for = "/assets/*"
+  for = "/assets/fig/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# fonts — never change
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# the animation and its poster — never change
+[[headers]]
+  for = "/assets/bci-*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# the stylesheet is edited in place, so it must always be re-checked
+[[headers]]
+  for = "/assets/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/index.html"
