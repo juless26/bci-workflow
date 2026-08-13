@@ -407,8 +407,160 @@
 }
 #sheet-02 .rule-band .rule__lead { text-transform: uppercase; }
 
-#sheet-02 .fig { margin: 0; border: var(--rule); }
-#sheet-02 .fig img { display: block; width: 100%; height: auto; }
+/* ---- participants / AI roles diagram ----------------------------
+   Rebuilt from the Figma illustration as real markup so the two group
+   labels can sit centred over their own group, the "AI assists" arrow
+   can be drawn cleanly, and the words are readable by a screen reader
+   instead of being locked inside a picture.
+   Colours sampled from the original artwork.                        */
+
+#sheet-02 .rolesviz {
+  --s2-skin:      #b88060;
+  --s2-author:    #a890c8;
+  --s2-caregiver: #d88010;
+  --s2-family:    #40a0c8;
+  --s2-recipient: #184848;
+  --s2-purple:    #6f4f99;
+  --s2-decode:    #e8f0f8;
+  --s2-compose:   #f0f0f8;
+  --s2-route:     #e8f0e8;
+  --s2-record:    #e8f0f8;
+  --s2-tile:      #d8c888;
+  --s2-boxline:   #c6cbd8;
+
+  margin: 0;
+  border: 1px solid var(--s2-boxline);
+  border-radius: 14px;
+  padding: clamp(16px, 2vw, 30px) clamp(14px, 2.2vw, 34px) clamp(14px, 1.6vw, 24px);
+  background: var(--paper);
+}
+
+#sheet-02 .rv {
+  display: grid;
+  grid-template-columns: 1fr clamp(84px, 11%, 150px) 1fr;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 22px);
+}
+
+/* the label sits over its own group and is centred on it */
+#sheet-02 .rv__head {
+  margin: 0 0 clamp(10px, 1.4vw, 20px);
+  text-align: center;
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--s2-purple);
+}
+
+#sheet-02 .rv__row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(6px, 1vw, 16px);
+  align-items: end;
+}
+
+/* --- people --- */
+
+#sheet-02 .rv__person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+#sheet-02 .rv__fig {
+  display: block;
+  width: clamp(42px, 4.4vw, 72px);
+  height: auto;
+}
+#sheet-02 .rv__name {
+  font-size: var(--t-body);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* --- AI role boxes --- */
+
+#sheet-02 .rv__box {
+  border: 1px solid var(--s2-boxline);
+  border-radius: 12px;
+  background: var(--boxbg, var(--s2-decode));
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: clamp(8px, 1vw, 16px);
+  text-align: center;
+}
+#sheet-02 .rv__box--decode  { --boxbg: var(--s2-decode); }
+#sheet-02 .rv__box--compose { --boxbg: var(--s2-compose); }
+#sheet-02 .rv__box--route   { --boxbg: var(--s2-route); }
+#sheet-02 .rv__box--record  { --boxbg: var(--s2-record); }
+
+#sheet-02 .rv__glyph {
+  display: block;
+  width: clamp(26px, 2.9vw, 48px);
+  height: auto;
+  margin-top: auto;
+}
+#sheet-02 .rv__box .rv__name { font-weight: 400; }
+
+/* --- the connector --- */
+
+#sheet-02 .rv__link {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+#sheet-02 .rv__linktext {
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--s2-purple);
+  white-space: nowrap;
+}
+#sheet-02 .rv__arrow { display: block; width: 100%; height: auto; }
+
+#sheet-02 .rv__caption {
+  margin: clamp(16px, 2vw, 30px) 0 0;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Two separate arrows rather than one rotated one: a rotated SVG keeps its
+   original footprint in the layout, so it slides over the text next to it. */
+#sheet-02 .rv__arrow--down { display: none; }
+
+@media (max-width: 860px) {
+  #sheet-02 .rv { grid-template-columns: 1fr; gap: 4px; }
+  #sheet-02 .rv__link { padding: 4px 0 10px; gap: 8px; }
+  #sheet-02 .rv__arrow--across { display: none; }
+  #sheet-02 .rv__arrow--down {
+    display: block;
+    width: 16px;
+    height: clamp(40px, 8vw, 62px);
+  }
+  /* square boxes get very tall once they are two-up, so let them shrink */
+  #sheet-02 .rv__box {
+    aspect-ratio: auto;
+    min-height: clamp(96px, 22vw, 150px);
+  }
+  #sheet-02 .rv__glyph { margin-top: 0; }
+}
+
+@media (max-width: 520px) {
+  #sheet-02 .rv__row { grid-template-columns: repeat(2, 1fr); gap: 14px 12px; }
+}
 
 @media (max-width: 860px) {
   #sheet-02 .roles { flex-direction: column; gap: 18px; }
@@ -479,8 +631,94 @@
       <p class="panel__body"><span class="rule__lead">Responsibility rule:</span> No AI agent both creates and releases an image. The Author keeps the final decision about what counts as their speech.</p>
     </div>
 
-    <figure class="fig">
-      <img src="assets/fig/fig-02-roles.webp" width="2400" height="477" loading="lazy" alt="Illustrated summary of the participants and roles listed above. On the left, under the heading Human participants, four coloured figures are labelled Author, Caregiver, Family and Recipient. A dashed arrow labelled AI assists points from them rightwards to four boxes under the heading AI system roles, labelled Decode, Compose, Route and Record. A line underneath reads: Humans decide what the message means. AI helps carry out the work.">
+    <figure class="rolesviz">
+      <div class="rv">
+        <div class="rv__side">
+          <p class="rv__head">Human participants</p>
+          <ul class="rv__row rv__row--people">
+          <li class="rv__person">
+            <svg class="rv__fig" viewBox="0 0 76 108" aria-hidden="true" focusable="false">
+              <circle cx="38" cy="27" r="24" fill="var(--s2-skin)" stroke="var(--ink)" stroke-width="2"/>
+              <rect x="8" y="46" width="60" height="58" rx="3" fill="var(--s2-author)" stroke="var(--ink)" stroke-width="2"/>
+            </svg>
+            <span class="rv__name">Author</span>
+          </li>
+          <li class="rv__person">
+            <svg class="rv__fig" viewBox="0 0 76 108" aria-hidden="true" focusable="false">
+              <circle cx="38" cy="27" r="24" fill="var(--s2-skin)" stroke="var(--ink)" stroke-width="2"/>
+              <rect x="8" y="46" width="60" height="58" rx="3" fill="var(--s2-caregiver)" stroke="var(--ink)" stroke-width="2"/>
+            </svg>
+            <span class="rv__name">Caregiver</span>
+          </li>
+          <li class="rv__person">
+            <svg class="rv__fig" viewBox="0 0 76 108" aria-hidden="true" focusable="false">
+              <circle cx="38" cy="27" r="24" fill="var(--s2-skin)" stroke="var(--ink)" stroke-width="2"/>
+              <rect x="8" y="46" width="60" height="58" rx="3" fill="var(--s2-family)" stroke="var(--ink)" stroke-width="2"/>
+            </svg>
+            <span class="rv__name">Family</span>
+          </li>
+          <li class="rv__person">
+            <svg class="rv__fig" viewBox="0 0 76 108" aria-hidden="true" focusable="false">
+              <circle cx="38" cy="27" r="24" fill="var(--s2-skin)" stroke="var(--ink)" stroke-width="2"/>
+              <rect x="8" y="46" width="60" height="58" rx="3" fill="var(--s2-recipient)" stroke="var(--ink)" stroke-width="2"/>
+            </svg>
+            <span class="rv__name">Recipient</span>
+          </li>
+          </ul>
+        </div>
+
+        <p class="rv__link">
+          <span class="rv__linktext"><span class="keepcase">AI</span> assists</span>
+          <svg class="rv__arrow rv__arrow--across" viewBox="0 0 132 16" aria-hidden="true" focusable="false">
+            <line x1="24" y1="8" x2="130" y2="8" stroke="var(--s2-purple)" stroke-width="2.6"
+                  stroke-dasharray="9 8" stroke-linecap="round"/>
+            <path d="M2 8 L22 0 L22 16 Z" fill="var(--s2-purple)"/>
+          </svg>
+          <svg class="rv__arrow rv__arrow--down" viewBox="0 0 16 84" aria-hidden="true" focusable="false">
+            <line x1="8" y1="82" x2="8" y2="26" stroke="var(--s2-purple)" stroke-width="2.6"
+                  stroke-dasharray="9 8" stroke-linecap="round"/>
+            <path d="M8 2 L16 22 L0 22 Z" fill="var(--s2-purple)"/>
+          </svg>
+          <span class="sr-only">The arrow points back towards the people: the <span class="keepcase">AI</span> roles support them.</span>
+        </p>
+
+        <div class="rv__side">
+          <p class="rv__head"><span class="keepcase">AI</span> system roles</p>
+          <ul class="rv__row rv__row--boxes">
+          <li class="rv__box rv__box--decode">
+            
+            <span class="rv__name">Decode</span>
+          </li>
+          <li class="rv__box rv__box--compose">
+            <svg class="rv__glyph" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <rect x="3"  y="3"  width="19" height="19" rx="3" fill="var(--s2-tile)" stroke="var(--ink)" stroke-width="1.6"/>
+              <rect x="26" y="3"  width="19" height="19" rx="3" fill="var(--s2-tile)" stroke="var(--ink)" stroke-width="1.6"/>
+              <rect x="3"  y="26" width="19" height="19" rx="3" fill="var(--s2-tile)" stroke="var(--ink)" stroke-width="1.6"/>
+              <rect x="26" y="26" width="19" height="19" rx="3" fill="var(--s2-tile)" stroke="var(--ink)" stroke-width="1.6"/>
+            </svg>
+            <span class="rv__name">Compose</span>
+          </li>
+          <li class="rv__box rv__box--route">
+            <svg class="rv__glyph" viewBox="0 0 48 30" aria-hidden="true" focusable="false">
+              <path d="M40 4 L28 11 L40 18 Z" fill="var(--s2-purple)"/>
+              <line x1="4" y1="23" x2="44" y2="23" stroke="var(--s2-purple)" stroke-width="2.6" stroke-linecap="round"/>
+            </svg>
+            <span class="rv__name">Route</span>
+          </li>
+          <li class="rv__box rv__box--record">
+            <svg class="rv__glyph" viewBox="0 0 40 48" aria-hidden="true" focusable="false">
+              <rect x="2" y="2" width="36" height="44" rx="4" fill="#fff" stroke="var(--ink)" stroke-width="1.8"/>
+              <line x1="10" y1="15" x2="30" y2="15" stroke="var(--s2-purple)" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="10" y1="24" x2="30" y2="24" stroke="var(--s2-purple)" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="10" y1="33" x2="24" y2="33" stroke="var(--s2-purple)" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+            <span class="rv__name">Record</span>
+          </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="rv__caption">Humans decide what the message means. <span class="keepcase">AI</span> helps carry out the work.</p>
     </figure>
   </div>
 </section>
