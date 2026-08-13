@@ -1063,7 +1063,19 @@
 
 <!-- ==================== Sheet 04 — Design values ==================== -->
 <style>
-/* Sheet 04 — design values. Every selector is scoped to #sheet-04. */
+/* Sheet 04 — design values. Every selector is scoped to #sheet-04.
+
+   COLOUR RULE for the nine cards. One tone, one meaning:
+     white (.panel--paper)  a value — the six peer values, rows 1 and 2
+     grey  (.panel)         the division-of-labour pair, AI and people.
+                            These two MUST match each other; giving one a
+                            different tone claims it outranks the other,
+                            when the whole point is that they are compared.
+     pink  (.panel--pink)   the conclusion, and only the conclusion.
+                            Pink means the same thing elsewhere on the site
+                            (Sheet 01's shared goal and core rule).
+   The file previously striped rows 1 and 2 white/grey, which implied the
+   six values were two different categories. They are not.                */
 
 /* the 3 x 3 card grid: nine label/description pairs, so a description
    list. Each dt/dd pair is wrapped in a div, which is the grid item and
@@ -1116,15 +1128,15 @@
         <dd class="panel__body">The Author can approve, refine, regenerate, defer, or stop. Nothing times out and nothing is sent automatically. The Author also controls recipients and proxy permissions. (Sankaran et al., 2023; Freudenburg et al., 2024)</dd>
       </div>
 
-      <div class="panel">
+      <div class="panel panel--paper">
         <dt class="panel__label">Accountability</dt>
         <dd class="panel__body">Every image keeps a simple provenance record: what words were decoded, which agent generated it, who approved it, and where it was sent. Creation and release are separated so responsibility is traceable.</dd>
       </div>
-      <div class="panel">
+      <div class="panel panel--paper">
         <dt class="panel__label">Accessibility</dt>
         <dd class="panel__body">The same authorship gate can be reached by implanted BCI, eye gaze, or switch scanning. Recipients can request the decoded words if an image is difficult to interpret. The interaction waits for the person instead of timing out.</dd>
       </div>
-      <div class="panel">
+      <div class="panel panel--paper">
         <dt class="panel__label">Meaningful human participation</dt>
         <dd class="panel__body">The Author makes the judgment no one else can make: &ldquo;Does this represent what I mean, and does it sound like me?&rdquo; Human expertise is not used to supervise the AI; it defines the meaning the AI cannot supply.</dd>
       </div>
@@ -1133,11 +1145,11 @@
         <dt class="panel__label">What <span class="keepcase">AI</span> is good at</dt>
         <dd class="panel__body">Fast decoding, generating alternatives, repetitive routing, and summarizing patterns across many interactions.</dd>
       </div>
-      <div class="panel panel--pink">
+      <div class="panel">
         <dt class="panel__label">What people are good at</dt>
         <dd class="panel__body">Meaning, identity, consent, social relationships, contextual exceptions, and deciding when the system is wrong.</dd>
       </div>
-      <div class="panel panel--paper">
+      <div class="panel panel--pink">
         <dt class="panel__label">Design principle</dt>
         <dd class="panel__body">Offload effort, not judgment. The system should reduce the work required to communicate without reducing the person&rsquo;s authority over what is communicated.</dd>
       </div>
