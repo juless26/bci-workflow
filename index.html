@@ -252,18 +252,9 @@
    sibling sheet. Values come from the Figma frame 184:3.
    ------------------------------------------------------------------ */
 
-/* the storyboard illustration */
-#sheet-01 .fig { margin: 0; }
-#sheet-01 .fig > a { display: block; border: var(--rule); }
-#sheet-01 .fig > a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-#sheet-01 .fig figcaption {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 7px;
-  font-size: var(--t-label);
-}
-#sheet-01 .fig figcaption a { color: var(--muted); text-decoration: none; border-bottom: 1px solid transparent; }
-#sheet-01 .fig figcaption a:hover { color: var(--ink); border-bottom-color: var(--muted); }
+/* the storyboard illustration. The figure, its zoom link, its caption
+   and the magnifying lens are all styled in sheets.css now, because
+   Sheets 04 and 07 use exactly the same treatment. */
 #sheet-01 .fig img { display: block; width: 100%; height: auto; }
 
 /* the pink "shared goal" panel — Figma pads it 20px/22px and sets the
@@ -337,10 +328,10 @@
     <p class="sheet__intro">Assignment 3 explored one interaction: a person using a speech BCI turns decoded speech into an image to express a thought, feeling, or memory. Assignment 4 zooms out. The question is no longer only &ldquo;Can the AI make an image?&rdquo; but &ldquo;How should people and AI share the work of creating, approving, sending, and learning from that image over time?&rdquo;</p>
 
     <figure class="fig">
-      <a href="assets/fig/fig-01-storyboard-v2.webp" target="_blank" rel="noopener" aria-label="Open the storyboard at full size in a new tab">
+      <a class="zoom" href="assets/fig/fig-01-storyboard-v2.webp" aria-label="Enlarge the storyboard">
         <img src="assets/fig/fig-01-storyboard-v2.webp" width="3072" height="2048" loading="lazy" alt="Hand-drawn storyboard of six panels numbered 00 to 05 that tells the whole project as a sequence. Panel 00 is the title page, &lsquo;BCI Speech-to-Image Communication Flow &mdash; a human-AI collaborative workflow for expressive communication&rsquo;, drawn as an author in a wheelchair wearing a BCI headset picturing a lake, a friendly robot holding up four candidate images, and two people receiving them, under the question &lsquo;What do you want to convey?&rsquo;. Panel 01, Context and shared goal, sorts the participants into three boxes &mdash; the author (uses a speech BCI, reviews and approves what best represents their meaning, always in control), the AI system (decodes intended speech, generates candidate images, does not decide meaning), and people in the loop (caregiver, SLP or family who give feedback, help interpret context and respect the author&rsquo;s intent) &mdash; and closes on a starred shared goal: enable clear, authentic expression while preserving dignity, agency and human connection. Panel 02, Collaborative workflow, is the part only the picture carries: six steps run left to right &mdash; 1 intent from author, 2 decode intended speech, 3 generate image options, 4 review and approval, 5 choose recipient, 6 share with recipient &mdash; drawn as a speech bubble saying &lsquo;I want to share a memory of the lake&rsquo;, a monitor showing a neural waveform, a grid of four generated landscapes, the author approving one, a contact picker listing Mom, Dad, Sister, Best Friend and SLP Maria with Dad selected, and a phone showing the sent image; a dashed &lsquo;refine and try again&rsquo; loop runs from the last step back to the first, so the author can restart at any time. Panel 03, Participants and roles, is a six-column chart &mdash; author (BCI user), caregiver, SLP, family member, AI system and recipient &mdash; each with a portrait, a list of responsibilities, and a one-line summary of the role. Panel 04, Design values, pairs four icons with 1 trust, 2 transparency, 3 agency, and 4 accountability and accessibility, ending on the banner &lsquo;AI assists. Humans decide. Together we communicate.&rsquo; Panel 05, Stakeholder feedback, holds four cards: caregivers, SLPs, family members and users provide feedback; real-world use informs refinements; co-design ensures the system meets people&rsquo;s needs; continuous feedback creates better communication for everyone. Much of this wording is repeated as text on the sheets that follow; what the drawing adds is the numbered narrative order and the visual chain of the six workflow steps with its refinement loop.">
       </a>
-      <figcaption><a href="assets/fig/fig-01-storyboard-v2.webp" target="_blank" rel="noopener">Open storyboard full size &#8599;</a></figcaption>
+      <figcaption><a href="assets/fig/fig-01-storyboard-v2.webp" target="_blank" rel="noopener">Click to enlarge &#8599;</a></figcaption>
     </figure>
 
     <div class="panel panel--pink goal">
@@ -1098,7 +1089,7 @@
 #sheet-04 .vgrid dd { margin: 0; }
 
 /* the illustrated strip */
-#sheet-04 .fig { margin: 0; border: var(--rule); }
+#sheet-04 .fig { margin: 0; }
 #sheet-04 .fig img { display: block; width: 100%; height: auto; }
 
 @media (max-width: 860px) {
@@ -1162,7 +1153,10 @@
     <p class="sheet__note sheet__note--quiet">This matters especially for speech BCIs because generated output may be experienced by others as the person&rsquo;s own voice. Research on speech neuroprostheses emphasizes preserving user agency and raises speech ownership as an ethical issue, not only a technical one. (Sankaran et al., 2023; Freudenburg et al., 2024)</p>
 
     <figure class="fig">
-      <img src="assets/fig/fig-04-values.webp" width="2400" height="493" loading="lazy" alt="Illustrated strip headed &ldquo;Design values&rdquo;, repeating the five values listed above &mdash; trust, transparency, agency, accountability and accessibility &mdash; as five pastel cards, each with a simple icon. Two lines appear only here: &ldquo;Human judgment stays where the AI cannot know the answer.&rdquo; and &ldquo;AI can help with the work. The Author decides what the message means.&rdquo;">
+      <a class="zoom" href="assets/fig/fig-04-values.webp" aria-label="Enlarge the design values strip">
+        <img src="assets/fig/fig-04-values.webp" width="2400" height="493" loading="lazy" alt="Illustrated strip headed &ldquo;Design values&rdquo;, repeating the five values listed above &mdash; trust, transparency, agency, accountability and accessibility &mdash; as five pastel cards, each with a simple icon. Two lines appear only here: &ldquo;Human judgment stays where the AI cannot know the answer.&rdquo; and &ldquo;AI can help with the work. The Author decides what the message means.&rdquo;">
+      </a>
+      <figcaption><a href="assets/fig/fig-04-values.webp" target="_blank" rel="noopener">Click to enlarge &#8599;</a></figcaption>
     </figure>
   </div>
 </section>
@@ -1541,7 +1535,7 @@
 }
 
 /* the illustrated strip */
-#sheet-07 .fig { margin: 0; border: var(--rule); }
+#sheet-07 .fig { margin: 0; }
 #sheet-07 .fig img { display: block; width: 100%; height: auto; }
 
 @media (max-width: 860px) {
@@ -1605,7 +1599,10 @@
     <p class="sheet__note sheet__note--quiet">The full reference list remains on the original Author&rsquo;s Proof page. This simplified version keeps the sources most directly connected to the collaborative workflow and its design rationale.</p>
 
     <figure class="fig">
-      <img src="assets/fig/fig-07-concepts.webp" width="2400" height="477" loading="lazy" alt="Illustrated strip headed &ldquo;Course concepts&rdquo;, repeating the six concepts above as pastel cards with simple figures of people, an AI box, bars and a loop arrow. The cards are labelled Judge + Advisor, Calibrated Trust, Agency + Ownership, Human Expertise, Iterate Over Time, and Feasibility &ne; Authority &mdash; the last card puts a &ldquo;not equal to&rdquo; sign between the AI box and the person, so technical capability is not the same as authority. A closing line reads: &ldquo;Technology can make the interaction possible. It does not decide who has authority.&rdquo;">
+      <a class="zoom" href="assets/fig/fig-07-concepts.webp" aria-label="Enlarge the course concepts strip">
+        <img src="assets/fig/fig-07-concepts.webp" width="2400" height="477" loading="lazy" alt="Illustrated strip headed &ldquo;Course concepts&rdquo;, repeating the six concepts above as pastel cards with simple figures of people, an AI box, bars and a loop arrow. The cards are labelled Judge + Advisor, Calibrated Trust, Agency + Ownership, Human Expertise, Iterate Over Time, and Feasibility &ne; Authority &mdash; the last card puts a &ldquo;not equal to&rdquo; sign between the AI box and the person, so technical capability is not the same as authority. A closing line reads: &ldquo;Technology can make the interaction possible. It does not decide who has authority.&rdquo;">
+      </a>
+      <figcaption><a href="assets/fig/fig-07-concepts.webp" target="_blank" rel="noopener">Click to enlarge &#8599;</a></figcaption>
     </figure>
   </div>
 </section>
@@ -1616,6 +1613,20 @@
   <span><strong>Jules Sherman</strong> &middot; UC Irvine MHCID &middot; Human&ndash;AI Interaction &middot; August 2026</span>
   <a class="to-top" href="#top">Back to top &uarr;</a>
 </footer>
+
+<!-- One viewer serves all three illustrations. It stays empty until a
+     picture is opened, so the browser never downloads a second copy. -->
+<dialog class="viewer" id="viewer" aria-label="Illustration at full size">
+  <div class="viewer__bar">
+    <span class="viewer__hint" id="viewerHint"></span>
+    <button type="button" class="viewer__close" id="viewerClose">Close &nbsp;Esc</button>
+  </div>
+  <!-- tabindex="0" is required, not decorative: the pane scrolls, and a
+       region you can scroll with a mouse but not reach with a keyboard
+       traps the picture away from keyboard users. Arrow keys pan it. -->
+  <div class="viewer__pane" id="viewerPane" tabindex="0"
+       role="group" aria-label="The picture at full size. Use the arrow keys to move around it."></div>
+</dialog>
 
 <script>
   /* mark the sheet currently in view in the navigation */
@@ -1635,6 +1646,102 @@
       });
     }, { rootMargin: '-15% 0px -75% 0px' });
     document.querySelectorAll('section.sheet').forEach(function (s) { obs.observe(s); });
+  })();
+
+  /* ---- open any illustration full size ----
+     The markup is already a working link to the image file. All this does
+     is intercept the click and show it in a viewer instead, so the page
+     still works if this script never runs. */
+  (function () {
+    var dlg = document.getElementById('viewer');
+    var pane = document.getElementById('viewerPane');
+    var hint = document.getElementById('viewerHint');
+    var links = document.querySelectorAll('.fig > a.zoom');
+    if (!dlg || !dlg.showModal || !links.length) return;
+
+    function open(link) {
+      var src = link.getAttribute('href');
+      var img = link.querySelector('img');
+      var w = img.getAttribute('width'), h = img.getAttribute('height');
+
+      pane.innerHTML = '';
+      var big = document.createElement('img');
+      big.src = src;
+      big.alt = img.getAttribute('alt') || '';
+      if (w) { big.width = w; } if (h) { big.height = h; }
+      pane.appendChild(big);
+
+      hint.textContent = (w && h ? w + ' × ' + h + ' · ' : '') + 'drag to pan';
+      dlg.showModal();
+      /* start in the middle rather than the top-left corner */
+      pane.scrollLeft = (pane.scrollWidth - pane.clientWidth) / 2;
+      pane.scrollTop = (pane.scrollHeight - pane.clientHeight) / 2;
+    }
+
+    Array.prototype.forEach.call(links, function (a) {
+      a.addEventListener('click', function (e) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; /* let a new-tab click through */
+        e.preventDefault();
+        open(a);
+      });
+    });
+
+    document.getElementById('viewerClose').addEventListener('click', function () { dlg.close(); });
+    /* free the memory when it closes */
+    dlg.addEventListener('close', function () { pane.innerHTML = ''; });
+    /* clicking the dark surround closes it */
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+
+    var down = false, sx = 0, sy = 0, sl = 0, st = 0;
+    pane.addEventListener('mousedown', function (e) {
+      down = true; sx = e.clientX; sy = e.clientY;
+      sl = pane.scrollLeft; st = pane.scrollTop;
+      pane.classList.add('is-dragging'); e.preventDefault();
+    });
+    window.addEventListener('mouseup', function () { down = false; pane.classList.remove('is-dragging'); });
+    window.addEventListener('mousemove', function (e) {
+      if (!down) return;
+      pane.scrollLeft = sl - (e.clientX - sx);
+      pane.scrollTop = st - (e.clientY - sy);
+    });
+  })();
+
+  /* ---- magnifying lens over an illustration ----
+     Mouse only, and deliberately so: it is a bonus on top of the viewer
+     above, never the only way to see a picture larger. */
+  (function () {
+    if (!window.matchMedia) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    var ZOOM = 2;
+    Array.prototype.forEach.call(document.querySelectorAll('.fig > a.zoom'), function (link) {
+      var img = link.querySelector('img');
+      if (!img) return;
+
+      var lens = document.createElement('div');
+      lens.className = 'lens';
+      lens.setAttribute('aria-hidden', 'true');
+      link.appendChild(lens);
+
+      link.addEventListener('mouseenter', function () {
+        lens.style.backgroundImage = 'url("' + img.currentSrc + '")';
+        lens.classList.add('is-on');
+        link.classList.add('lens-active');
+      });
+      link.addEventListener('mouseleave', function () {
+        lens.classList.remove('is-on');
+        link.classList.remove('lens-active');
+      });
+      link.addEventListener('mousemove', function (e) {
+        var r = img.getBoundingClientRect();
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        var w = lens.offsetWidth, h = lens.offsetHeight;
+        lens.style.left = (x - w / 2) + 'px';
+        lens.style.top = (y - h / 2) + 'px';
+        lens.style.backgroundSize = (r.width * ZOOM) + 'px ' + (r.height * ZOOM) + 'px';
+        lens.style.backgroundPosition = (-(x * ZOOM - w / 2)) + 'px ' + (-(y * ZOOM - h / 2)) + 'px';
+      });
+    });
   })();
 
   /* some browsers hold autoplay until the page is interacted with */
