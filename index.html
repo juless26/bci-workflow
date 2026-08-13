@@ -747,6 +747,35 @@
 /* text typed in sentence case, shown in capitals */
 #sheet-03 .caps { text-transform: uppercase; }
 
+/* ══ COLOUR RULE FOR THIS SHEET ══════════════════════════════════
+   This sheet prints a legend, which makes it a special case. Once you
+   tell the reader "grey means Coordinate, pink means Negotiate, white
+   means Transfer", every grey rectangle on the sheet claims to mean
+   Coordinate. So the three legend colours belong to the CHIPS and to
+   nothing else.
+
+   The file used to colour the card backgrounds with those same three
+   tones as well, on a different and inconsistent scheme: three of the
+   six cards contradicted their own chip, and cards 1 and 2 were exactly
+   inverted — card 1 was white while its chip said Coordinate (grey),
+   card 2 was grey while its chip said Transfer (white).
+
+   The two jobs are now separated:
+
+     CHIPS carry the interaction type, and only chips do.
+       grey  Coordinate      pink  Negotiate      white  Transfer
+
+     CARD BACKGROUNDS carry who holds authority, matching Sheet 04.
+       white  a step in the sequence — the six steps are peers, and
+              the numbered black square already tells you the order
+       pink   human authority — the authorship gate, the key-handoff
+              band, and the human review card
+       grey   the machine side — the Record Keeper's slow-loop card
+
+   Step 3 is pink AND carries a pink Negotiate chip. That is not a
+   collision: it is the one step where the two systems genuinely agree,
+   because the gate IS the human decision.                            */
+
 /* ── the interaction-type chip ── */
 #sheet-03 .chip {
   display: inline-block;
@@ -915,6 +944,7 @@
 }
 #sheet-03 .card--panel { background: var(--panel); }
 #sheet-03 .card--paper { background: var(--paper); }
+#sheet-03 .card--pink  { background: var(--pink); }
 
 /* ── footnote ── */
 #sheet-03 .sheet__note--quiet { font-weight: 400; line-height: 1.45; }
@@ -974,7 +1004,7 @@
           <p class="step__body">The Author attempts to speak. The Decoder turns the neural signal into candidate words and shows confidence.</p>
         </li>
 
-        <li class="step step--panel">
+        <li class="step">
           <p class="step__meta">
             <span class="step__num">2</span>
             <span class="step__role">Composer</span>
@@ -1008,7 +1038,7 @@
           <p class="step__body">If the Author has chosen a proxy mode, the proxy may help compose. The result stays clearly labeled as proxy-assisted communication.</p>
         </li>
 
-        <li class="step step--panel">
+        <li class="step">
           <p class="step__meta">
             <span class="step__num">5</span>
             <span class="step__role">Author + router</span>
@@ -1041,7 +1071,7 @@
         <p class="card__body">The Record Keeper flags repeated mismatches: words that are often changed, images repeatedly regenerated, or settings the Author no longer uses.</p>
       </div>
 
-      <div class="card card--paper">
+      <div class="card card--pink">
         <h3 class="card__label">Human review</h3>
         <h4 class="card__title">Author + <span class="keepcase">SLP</span> / review partner</h4>
         <p class="card__body">They decide whether vocabulary, image preferences, proxy permissions, or recipient settings should change. The system does not silently learn a new meaning from behavior.</p>
