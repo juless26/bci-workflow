@@ -1687,8 +1687,11 @@
     });
 
     document.getElementById('viewerClose').addEventListener('click', function () { dlg.close(); });
-    /* free the memory when it closes */
-    dlg.addEventListener('close', function () { pane.innerHTML = ''; });
+    /* Do NOT empty the pane on the dialog's `close` event. That event is
+       delivered asynchronously, so closing one picture and immediately
+       opening another wipes the new picture after it has been inserted
+       and you get an empty viewer. open() clears the pane before it
+       inserts, which is the only clearing this needs. */
     /* clicking the dark surround closes it */
     dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
 
