@@ -283,6 +283,17 @@ body {
     color: var(--muted);
     margin-bottom: 5px;
   }
+
+  /* Stacked, the border moves from the cells to the row, so the row is
+     the thing that can carry a shadow. Lift the row itself and leave
+     the now-borderless cells alone. */
+  .dtable tbody tr > * { transition: none; }
+  .dtable tbody tr:hover > * { transform: none; box-shadow: none; }
+  .dtable tbody tr { transition: transform 0.14s ease, box-shadow 0.14s ease; }
+  .dtable tbody tr:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 0 var(--ink);
+  }
 }
 
 /* ============================================================
@@ -306,6 +317,12 @@ body {
 /* ---------- 1 + 2. illustrations ---------- */
 
 .fig { position: relative; }
+
+/* Only the storyboard on Sheet 01 opens full size. The two illustrated
+   strips on Sheets 04 and 07 are wide and shallow — opening them gained
+   almost nothing, so they are plain pictures with no link and no lens.
+   A figure with no zoom link carries its own border. */
+.fig > img { border: var(--rule); }
 
 .fig > .zoom {
   display: block;
@@ -384,20 +401,42 @@ body {
 
 /* ---------- 3. cards lift on hover and on keyboard focus ---------- */
 
-/* Only cards that sit in a group of cards. A lone full-width panel —
-   Sheet 01's shared goal, Sheet 05's note — stays still, because there
-   is nothing there to compare it against and the movement would just
-   be noise. */
-.panel:has(~ .panel),
-.panel ~ .panel,
+/* EVERY bordered rectangle lifts. This started out narrower — only cards
+   that sat in a group of cards, on the theory that a lone full-width
+   panel had nothing to be compared against. That was wrong in practice:
+   Jules reported the still panels twice as though they were broken,
+   which is the correct reading. A rule the reader cannot see is not a
+   rule, it is an inconsistency. "Rectangles lift" is the whole rule.
+
+   Keep this list in step with any new card class. There is a check in
+   verify-lift.py that fails if a bordered card is left out. */
+.panel,
 .split > div,
-.step {
+.step,
+.card,
+.role,
+.win {
   transition: transform 0.14s ease, box-shadow 0.14s ease;
 }
-.panel:has(~ .panel):hover, .panel ~ .panel:hover,
-.split > div:hover, .step:hover,
-.panel:has(~ .panel):focus-visible, .panel ~ .panel:focus-visible,
-.split > div:focus-visible, .step:focus-visible {
+.panel:hover, .split > div:hover, .step:hover, .card:hover, .role:hover, .win:hover,
+.panel:focus-visible, .split > div:focus-visible, .step:focus-visible,
+.card:focus-visible, .role:focus-visible, .win:focus-visible {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+
+/* Sheet 05's rectangles are table cells, so the .panel rule above never
+   reached them. They need their own rule, and a different one, because
+   in a table the ROW is the unit of meaning — not the cell. Hovering
+   anywhere in a row lifts all three of its cells together, which keeps
+   the row intact and doubles as a reading aid across three wide columns.
+
+   Each cell casts its own shadow. The 6px offset lands inside the
+   border-spacing gap between cells, so no shadow falls on a neighbour. */
+.dtable tbody tr > * {
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.dtable tbody tr:hover > * {
   transform: translate(-3px, -3px);
   box-shadow: 6px 6px 0 0 var(--ink);
 }
@@ -424,10 +463,11 @@ body {
 
   /* someone who has asked their system for less motion still gets the
      shadow — they just do not get the shift that causes it */
-  .panel:has(~ .panel):hover, .panel ~ .panel:hover,
-  .split > div:hover, .step:hover,
-  .panel:has(~ .panel):focus-visible, .panel ~ .panel:focus-visible,
-  .split > div:focus-visible, .step:focus-visible {
+  .panel:hover, .split > div:hover, .step:hover,
+  .card:hover, .role:hover, .win:hover,
+  .panel:focus-visible, .split > div:focus-visible, .step:focus-visible,
+  .card:focus-visible, .role:focus-visible, .win:focus-visible,
+  .dtable tbody tr:hover > *, .dtable tbody tr:hover {
     transform: none;
   }
 }
